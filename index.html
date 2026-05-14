@@ -90,6 +90,67 @@
     background: var(--lime); color: var(--bg); border-color: var(--lime);
   }
   .topic-pill .count { opacity: 0.7; margin-left: 6px; font-size: 10px; }
+  .topic-pill .mastery {
+    display: block; margin-top: 4px; font-size: 9px;
+    color: var(--lime); opacity: 0.85; letter-spacing: 0;
+  }
+  .topic-pill.active .mastery { color: var(--bg); opacity: 1; }
+  .topic-pill.cleared {
+    border-color: var(--lime);
+    box-shadow: 0 0 0 1px var(--lime) inset, 0 0 14px rgba(223,255,0,0.25);
+  }
+  .topic-pill.missed-pill {
+    border-color: var(--red); color: var(--red);
+    animation: missed-pulse 2s ease-in-out infinite;
+  }
+  .topic-pill.missed-pill:hover { color: var(--bg); background: var(--red); border-color: var(--red); }
+  .topic-pill.missed-pill.active { background: var(--red); color: var(--bg); border-color: var(--red); }
+  @keyframes missed-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); }
+    50%      { box-shadow: 0 0 0 4px rgba(255, 51, 102, 0.18); }
+  }
+
+  /* ---------- DAILY BADGE (topbar) ---------- */
+  .daily-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px; margin-right: 4px;
+    background: var(--bg-2); border: 2px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--ink); white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .daily-badge .db-streak { color: var(--orange); }
+  .daily-badge .db-today { color: var(--ink-dim); font-size: 10px; }
+  .daily-badge.done { border-color: var(--lime); color: var(--lime); }
+  .daily-badge.done .db-today { color: var(--lime); }
+  @media (max-width: 480px) {
+    .daily-badge { font-size: 10px; padding: 5px 7px; gap: 4px; }
+    .daily-badge .db-today { font-size: 9px; }
+  }
+
+  /* ---------- COMBO SHAKE ---------- */
+  @keyframes shake-small {
+    0%,100% { transform: translate(0,0); }
+    25%     { transform: translate(-3px, 1px); }
+    75%     { transform: translate(3px, -1px); }
+  }
+  @keyframes shake-big {
+    0%,100% { transform: translate(0,0); }
+    15%     { transform: translate(-7px, 3px); }
+    35%     { transform: translate(7px, -3px); }
+    55%     { transform: translate(-5px, 2px); }
+    75%     { transform: translate(5px, -2px); }
+  }
+  body.shake-small { animation: shake-small 0.4s ease; }
+  body.shake-big   { animation: shake-big 0.6s ease; }
+
+  /* ---------- FLASH ACTIONS / DEF-FIRST TOGGLE ---------- */
+  .flash-actions { display: flex; gap: 8px; align-items: center; }
+  .def-first-btn { font-size: 10px; }
+  .def-first-btn.active {
+    border-color: var(--cyan); color: var(--cyan);
+    box-shadow: 0 0 0 1px var(--cyan) inset;
+  }
 
   /* ---------- GAMES GRID ---------- */
   .games {
@@ -489,6 +550,7 @@
   <div class="topbar">
     <div class="logo" onclick="goHome()">★ CRAM ARCADE</div>
     <div class="topbar-right">
+      <div class="daily-badge" id="dailyBadge" title="Daily goal"></div>
       <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Sound">🔊</button>
       <button class="icon-btn" onclick="openSettings()" title="Settings">⚙</button>
     </div>
@@ -539,7 +601,10 @@
   <div id="flash" class="screen">
     <div class="screen-header">
       <div class="screen-title">// FLASH CARDS</div>
-      <button class="back-btn" onclick="goHome()">← BACK</button>
+      <div class="flash-actions">
+        <button class="back-btn def-first-btn" id="defFirstBtn" onclick="toggleDefFirst()" title="Show definition first (active recall)">DEF FIRST</button>
+        <button class="back-btn" onclick="goHome()">← BACK</button>
+      </div>
     </div>
     <div class="flashcard-stage">
       <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -865,6 +930,14 @@ const ACHIEVEMENTS = [
   { id: 'survivor_10', icon: '🛡️', name: 'Survivor', desc: 'Get 10+ in Survival mode' },
   { id: 'typist', icon: '⌨️', name: 'Typist', desc: 'Type 5 terms correctly in Type It' },
   { id: 'all_games', icon: '🏆', name: 'Arcade Champ', desc: 'Try all 5 game modes' },
+  { id: 'mastery_25', icon: '🌱', name: 'Getting Smart', desc: 'Master 25 terms (3 correct in a row)' },
+  { id: 'mastery_50', icon: '🧠', name: 'Halfway Hero', desc: 'Master 50 terms' },
+  { id: 'mastery_100', icon: '👑', name: 'History King', desc: 'Master 100 terms' },
+  { id: 'topic_cleared', icon: '✅', name: 'Topic Crusher', desc: 'Master every term in a topic' },
+  { id: 'daily_done', icon: '📅', name: 'Daily Done', desc: 'Hit your daily 20-term goal' },
+  { id: 'streak_days_3', icon: '🔥', name: '3-Day Streak', desc: 'Study 3 days in a row' },
+  { id: 'streak_days_5', icon: '💎', name: '5-Day Streak', desc: 'Study 5 days in a row' },
+  { id: 'drilled_clean', icon: '🎯', name: 'Cleaned the Slate', desc: 'Clear all your missed terms' },
 ];
 /* ========================================================= */
 
@@ -923,6 +996,15 @@ const Sound = {
     [659, 880, 1046, 1318].forEach((f, i) =>
       setTimeout(() => this.beep(f, 0.12, 'triangle', 0.08), i * 80)
     );
+  },
+  combo(tier) {
+    // tier 1: 5-streak, tier 2: 10-streak, tier 3: 15+
+    const base = 523.25;
+    const steps = tier === 1 ? 4 : tier === 2 ? 6 : 8;
+    const ratio = tier === 3 ? 1.18 : 1.15;
+    for (let i = 0; i < steps; i++) {
+      setTimeout(() => this.beep(base * Math.pow(ratio, i), 0.08, 'square', 0.08), i * 55);
+    }
   },
   startMusic() {
     if (!this.enabled || !this.ctx || this.musicPlaying) return;
@@ -1004,26 +1086,44 @@ function getTopics() {
   return ['ALL', ...Array.from(set)];
 }
 function getActiveTerms() {
+  if (activeTopic === '__missed') return getMissedTerms();
   return activeTopic === 'ALL' ? TERMS : TERMS.filter(t => (t.topic || 'Misc') === activeTopic);
 }
 function renderTopicPills() {
   const wrap = $('topicPills');
   wrap.innerHTML = '';
   getTopics().forEach(topic => {
-    const count = topic === 'ALL' ? TERMS.length : TERMS.filter(t => (t.topic || 'Misc') === topic).length;
+    const set = topic === 'ALL' ? TERMS : TERMS.filter(t => (t.topic || 'Misc') === topic);
+    const count = set.length;
+    const mastered = set.filter(t => isTermMastered(t.term)).length;
+    const allDone = mastered === count && count > 0;
     const pill = document.createElement('button');
-    pill.className = 'topic-pill' + (topic === activeTopic ? ' active' : '');
-    pill.innerHTML = `${topic.toUpperCase()}<span class="count">${count}</span>`;
+    pill.className = 'topic-pill' + (topic === activeTopic ? ' active' : '') + (allDone ? ' cleared' : '');
+    pill.innerHTML = `<span class="pill-label">${topic.toUpperCase()}</span><span class="count">${count}</span>` +
+      (mastered > 0 ? `<span class="mastery">${mastered}/${count} ✓</span>` : '');
     pill.onclick = () => { activeTopic = topic; Sound.click(); renderTopicPills(); renderStats(); };
     wrap.appendChild(pill);
   });
+  // Missed-terms drill pill — only appears when there are missed terms
+  const missed = getMissedTerms();
+  if (missed.length > 0) {
+    const pill = document.createElement('button');
+    pill.className = 'topic-pill missed-pill' + (activeTopic === '__missed' ? ' active' : '');
+    pill.innerHTML = `<span class="pill-label">✗ DRILL MISSED</span><span class="count">${missed.length}</span>`;
+    pill.onclick = () => { activeTopic = '__missed'; Sound.click(); renderTopicPills(); renderStats(); };
+    wrap.appendChild(pill);
+  } else if (activeTopic === '__missed') {
+    // No more missed — auto-reset filter
+    activeTopic = 'ALL';
+    unlock('drilled_clean');
+  }
 }
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function goHome() { stopAllTimers(); Sound.click(); showScreen('home'); renderStats(); }
+function goHome() { stopAllTimers(); Sound.click(); showScreen('home'); renderStats(); renderTopicPills(); renderDailyBadge(); }
 
 // ---------- HI-SCORES ----------
 function hiKey(mode) { return `cram_${mode}_${activeTopic}`; }
@@ -1077,6 +1177,114 @@ function bumpStat(key, by = 1) {
   return cur;
 }
 function getStat(key) { return parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10); }
+
+// ---------- TERM STATS / MASTERY / MISSED ----------
+const MASTERY_TARGET = 3; // consecutive correct to master a term
+function getTermStats() { return JSON.parse(localStorage.getItem('cram_term_stats') || '{}'); }
+function saveTermStats(s) { localStorage.setItem('cram_term_stats', JSON.stringify(s)); }
+function recordTermResult(termStr, gotCorrect) {
+  const all = getTermStats();
+  const s = all[termStr] || { correct: 0, wrong: 0, streak: 0 };
+  const wasMastered = s.streak >= MASTERY_TARGET;
+  if (gotCorrect) { s.correct++; s.streak++; } else { s.wrong++; s.streak = 0; }
+  all[termStr] = s;
+  saveTermStats(all);
+  bumpDailyCount();
+  // Mastery unlock moment
+  if (!wasMastered && s.streak >= MASTERY_TARGET) {
+    bumpStat('terms_mastered');
+    const total = getStat('terms_mastered');
+    if (total >= 25) unlock('mastery_25');
+    if (total >= 50) unlock('mastery_50');
+    if (total >= 100) unlock('mastery_100');
+    // topic-clear check
+    const term = TERMS.find(t => t.term === termStr);
+    if (term) {
+      const topic = term.topic || 'Misc';
+      const set = TERMS.filter(t => (t.topic || 'Misc') === topic);
+      if (set.every(t => isTermMastered(t.term))) unlock('topic_cleared');
+    }
+  }
+}
+function isTermMastered(termStr) { return (getTermStats()[termStr]?.streak || 0) >= MASTERY_TARGET; }
+function getMissedTerms() {
+  const all = getTermStats();
+  return TERMS.filter(t => {
+    const s = all[t.term];
+    return s && s.wrong > 0 && (s.streak || 0) < MASTERY_TARGET;
+  });
+}
+function topicMasteredCount(topic) {
+  const set = topic === 'ALL' ? TERMS : TERMS.filter(t => (t.topic || 'Misc') === topic);
+  return set.filter(t => isTermMastered(t.term)).length;
+}
+
+// ---------- DAILY QUEST / STREAK ----------
+const DAILY_TARGET = 20;
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function yesterdayStr() {
+  const d = new Date(); d.setDate(d.getDate() - 1);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function getDailyState() {
+  const raw = localStorage.getItem('cram_daily');
+  const s = raw ? JSON.parse(raw) : { streak: 0, lastCompletedDay: '', todayCount: 0, todayDate: '' };
+  if (s.todayDate !== todayStr()) { s.todayCount = 0; s.todayDate = todayStr(); }
+  return s;
+}
+function saveDailyState(s) { localStorage.setItem('cram_daily', JSON.stringify(s)); }
+function bumpDailyCount() {
+  const s = getDailyState();
+  s.todayCount++;
+  if (s.todayCount === DAILY_TARGET && s.lastCompletedDay !== todayStr()) {
+    s.streak = (s.lastCompletedDay === yesterdayStr()) ? s.streak + 1 : 1;
+    s.lastCompletedDay = todayStr();
+    fireConfetti(60);
+    Sound.victory();
+    unlock('daily_done');
+    if (s.streak >= 3) unlock('streak_days_3');
+    if (s.streak >= 5) unlock('streak_days_5');
+  }
+  saveDailyState(s);
+  renderDailyBadge();
+}
+function renderDailyBadge() {
+  const el = $('dailyBadge');
+  if (!el) return;
+  const s = getDailyState();
+  const done = s.todayCount >= DAILY_TARGET;
+  el.classList.toggle('done', done);
+  el.innerHTML = `<span class="db-streak">🔥${s.streak}</span><span class="db-today">${Math.min(s.todayCount, DAILY_TARGET)}/${DAILY_TARGET}</span>`;
+  el.title = done ? `Daily goal hit! Streak: ${s.streak}` : `Today: ${s.todayCount}/${DAILY_TARGET} terms. Streak: ${s.streak} days.`;
+}
+
+// ---------- COMBO JUICE ----------
+function triggerCombo(streak) {
+  if (streak === 5) {
+    document.body.classList.remove('shake-small','shake-big');
+    void document.body.offsetWidth;
+    document.body.classList.add('shake-small');
+    setTimeout(() => document.body.classList.remove('shake-small'), 400);
+    Sound.combo(1);
+  } else if (streak === 10) {
+    document.body.classList.remove('shake-small','shake-big');
+    void document.body.offsetWidth;
+    document.body.classList.add('shake-big');
+    setTimeout(() => document.body.classList.remove('shake-big'), 600);
+    fireConfetti(30);
+    Sound.combo(2);
+  } else if (streak >= 15 && streak % 5 === 0) {
+    document.body.classList.remove('shake-small','shake-big');
+    void document.body.offsetWidth;
+    document.body.classList.add('shake-big');
+    setTimeout(() => document.body.classList.remove('shake-big'), 800);
+    fireConfetti(60);
+    Sound.combo(3);
+  }
+}
 
 // ---------- CONFETTI ----------
 const confettiCanvas = $('confetti-canvas');
@@ -1162,10 +1370,15 @@ function startFlash() {
   $('home').dataset.lastVisitedFlash = '1';
   unlock('first_game');
 }
+let defFirst = localStorage.getItem('cram_def_first') === '1';
 function renderFlash() {
   const t = flashTerms[flashOrder[flashIdx]];
-  $('flashTerm').textContent = t.term;
-  $('flashDef').textContent = t.def;
+  $('flashTerm').textContent = defFirst ? t.def : t.term;
+  $('flashDef').textContent = defFirst ? t.term : t.def;
+  document.querySelectorAll('.flashcard-front .flashcard-label').forEach(el => el.textContent = defFirst ? 'DEFINITION' : 'TERM');
+  document.querySelectorAll('.flashcard-back .flashcard-label').forEach(el => el.textContent = defFirst ? 'TERM' : 'DEFINITION');
+  $('defFirstBtn').textContent = defFirst ? 'TERM FIRST' : 'DEF FIRST';
+  $('defFirstBtn').classList.toggle('active', defFirst);
   $('flashcard').classList.remove('flipped');
   $('prevBtn').disabled = flashIdx === 0;
   $('nextBtn').disabled = flashIdx === flashOrder.length - 1;
@@ -1177,6 +1390,12 @@ function renderFlash() {
     dots.appendChild(d);
   });
   seen.add(flashIdx);
+}
+function toggleDefFirst() {
+  defFirst = !defFirst;
+  localStorage.setItem('cram_def_first', defFirst ? '1' : '0');
+  Sound.click();
+  if (flashTerms && flashTerms.length) renderFlash();
 }
 function flipCard() { $('flashcard').classList.toggle('flipped'); Sound.flip(); }
 function nextCard() { if (flashIdx < flashOrder.length - 1) { flashIdx++; renderFlash(); Sound.click(); } }
@@ -1253,6 +1472,8 @@ function startQTimer() {
 function answer(correct, btn, ev) {
   clearInterval(qTimer);
   document.querySelectorAll('#qOptions .quiz-option').forEach(b => b.disabled = true);
+  const currentTerm = qTerms[qOrder[qIdx]].term;
+  recordTermResult(currentTerm, correct);
   if (correct) {
     btn.classList.add('correct');
     qScore += 10 + Math.floor(qTimeLeft / 100);
@@ -1262,21 +1483,24 @@ function answer(correct, btn, ev) {
     burst(ev.clientX, ev.clientY, '#00ff88');
     if (qStreak >= 5) unlock('streak_5');
     if (qStreak >= 10) unlock('streak_10');
+    triggerCombo(qStreak);
   } else {
     btn.classList.add('wrong');
     qStreak = 0;
     Sound.wrong();
     document.querySelectorAll('#qOptions .quiz-option').forEach(b => {
-      if (b.textContent === qTerms[qOrder[qIdx]].term) b.classList.add('correct');
+      if (b.textContent === currentTerm) b.classList.add('correct');
     });
   }
   $('qScore').textContent = qScore;
   setTimeout(() => { qIdx++; nextQuestion(); }, 1000);
 }
 function qTimeOut() {
+  const currentTerm = qTerms[qOrder[qIdx]].term;
+  recordTermResult(currentTerm, false);
   document.querySelectorAll('#qOptions .quiz-option').forEach(b => {
     b.disabled = true;
-    if (b.textContent === qTerms[qOrder[qIdx]].term) b.classList.add('correct');
+    if (b.textContent === currentTerm) b.classList.add('correct');
   });
   qStreak = 0; Sound.wrong();
   setTimeout(() => { qIdx++; nextQuestion(); }, 1200);
@@ -1454,10 +1678,13 @@ function typeCorrectAnswer() {
   typeStreak++; typeCorrect++;
   typeBest = Math.max(typeBest, typeStreak);
   Sound.correct();
+  recordTermResult(typeTerms[typeOrder[typeIdx]].term, true);
   const rect = input.getBoundingClientRect();
   burst(rect.left + rect.width / 2, rect.top + rect.height / 2, '#00ff88');
   if (typeStreak >= 5) unlock('typist');
   if (typeStreak >= 5) unlock('streak_5');
+  if (typeStreak >= 10) unlock('streak_10');
+  triggerCombo(typeStreak);
   $('tScore').textContent = typeScore;
   setTimeout(() => { typeIdx++; nextType(); }, 900);
 }
@@ -1487,6 +1714,7 @@ function typeSkip() {
   Sound.wrong();
   // Show the answer briefly
   const t = typeTerms[typeOrder[typeIdx]];
+  recordTermResult(t.term, false);
   renderTypeTarget(t.term, t.term);
   $('tInput').disabled = true;
   setTimeout(() => { typeIdx++; nextType(); }, 1500);
@@ -1564,6 +1792,7 @@ function startSTimer() {
 function sAnswer(correct, btn, ev) {
   clearInterval(sTimer);
   document.querySelectorAll('#sOptions .quiz-option').forEach(b => b.disabled = true);
+  recordTermResult(sCurT.term, correct);
   if (correct) {
     btn.classList.add('correct');
     sScore++; sStreak++;
@@ -1572,16 +1801,18 @@ function sAnswer(correct, btn, ev) {
     burst(ev.clientX, ev.clientY, '#00ff88');
     if (sStreak >= 5) unlock('streak_5');
     if (sStreak >= 10) unlock('streak_10');
+    triggerCombo(sStreak);
     setTimeout(nextSurvival, 700);
   } else {
     btn.classList.add('wrong');
     document.querySelectorAll('#sOptions .quiz-option').forEach(b => {
       if (b.textContent === sCurT.term) b.classList.add('correct');
     });
-    sLoseLife();
+    sLoseLife(true);
   }
 }
-function sLoseLife() {
+function sLoseLife(alreadyRecorded) {
+  if (!alreadyRecorded && sCurT) recordTermResult(sCurT.term, false);
   sLives--; sStreak = 0;
   updateLives();
   document.querySelectorAll('#sOptions .quiz-option').forEach(b => b.disabled = true);
@@ -1662,6 +1893,7 @@ function renderStatsScreen() {
 Sound.init();
 renderTopicPills();
 renderStats();
+renderDailyBadge();
 </script>
 </body>
 </html>
