@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORBIN'S CRAM ARCADE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     CORBIN'S CRAM ARCADE
+     To add or change terms, edit the TERMS array at the bottom
+     of this file. Nothing else needs to change.
+     ========================================================= */
+
+  :root {
+    --bg: #0a0014;
+    --bg-2: #15022a;
+    --ink: #f5f0ff;
+    --ink-dim: #8b7da8;
+    --lime: #dfff00;
+    --pink: #ff2d95;
+    --cyan: #00e5ff;
+    --green: #00ff88;
+    --red: #ff3366;
+    --grid: rgba(223, 255, 0, 0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+      radial-gradient(circle at 20% 10%, rgba(255, 45, 149, 0.15), transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(0, 229, 255, 0.12), transparent 50%);
+    background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+    background-attachment: fixed;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3vw, 20px);
+    color: var(--lime);
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 0 var(--pink);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .stat { color: var(--ink-dim); }
+  .stat span { color: var(--lime); font-weight: 700; }
+
+  /* ---------- HOME ---------- */
+  .hero {
+    text-align: center;
+    padding: 40px 0 50px;
+  }
+  .hero h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 5.5vw, 38px);
+    line-height: 1.4;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .hero h1 .accent { color: var(--lime); }
+  .hero h1 .pink { color: var(--pink); }
+  .hero p {
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 500px;
+    margin: 0 auto 8px;
+  }
+  .hero .count {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .games {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .game-card {
+    background: var(--bg-2);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, var(--accent, var(--lime)) 200%);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .game-card:hover, .game-card:focus {
+    transform: translate(-3px, -3px);
+    border-color: var(--accent, var(--lime));
+    box-shadow: 6px 6px 0 var(--accent, var(--lime));
+    outline: none;
+  }
+  .game-card .num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--accent, var(--lime));
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .game-card h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .game-card p {
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  /* ---------- SCREENS ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .screen-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: var(--lime);
+  }
+  .back-btn {
+    background: transparent;
+    border: 2px solid var(--ink-dim);
+    color: var(--ink-dim);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .back-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .flashcard-stage {
+    perspective: 1200px;
+    margin: 20px 0 24px;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flashcard {
+    width: 100%;
+    max-width: 600px;
+    min-height: 280px;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .flashcard-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 32px;
+    text-align: center;
+  }
+  .flashcard-front {
+    background: var(--bg-2);
+    border: 2px solid var(--lime);
+    box-shadow: 8px 8px 0 var(--pink);
+  }
+  .flashcard-back {
+    background: var(--pink);
+    color: var(--bg);
+    border: 2px solid var(--bg);
+    box-shadow: 8px 8px 0 var(--lime);
+    transform: rotateY(180deg);
+  }
+  .flashcard-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+  .flashcard-front .term {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(16px, 3.2vw, 24px);
+    line-height: 1.5;
+    color: var(--lime);
+  }
+  .flashcard-back .def {
+    font-size: clamp(16px, 2.6vw, 22px);
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--bg);
+  }
+
+  .flashcard-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    background: var(--bg-2);
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) {
+    background: var(--lime);
+    color: var(--bg);
+    border-color: var(--lime);
+  }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    background: var(--ink-dim);
+    opacity: 0.4;
+    transition: all 0.2s;
+  }
+  .dot.active { background: var(--lime); opacity: 1; transform: scale(1.4); }
+  .dot.seen { background: var(--cyan); opacity: 0.8; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-stage { margin: 20px 0; }
+  .quiz-prompt {
+    background: var(--bg-2);
+    border-left: 6px solid var(--lime);
+    padding: 24px 22px;
+    margin-bottom: 24px;
+    font-size: clamp(16px, 2.4vw, 20px);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+  .quiz-prompt .label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--lime);
+    margin-bottom: 10px;
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 640px) {
+    .quiz-options { grid-template-columns: 1fr 1fr; }
+  }
+  .quiz-option {
+    background: var(--bg-2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--ink);
+    padding: 18px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .quiz-option:hover {
+    border-color: var(--cyan);
+    transform: translateX(4px);
+  }
+  .quiz-option.correct {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+    animation: pop 0.4s ease;
+  }
+  .quiz-option.wrong {
+    background: var(--red);
+    color: var(--bg);
+    border-color: var(--red);
+    animation: shake 0.4s ease;
+  }
+  .quiz-option:disabled { cursor: default; }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+  .quiz-meta .streak { color: var(--pink); font-weight: 700; }
+  .quiz-meta .streak.hot { color: var(--lime); animation: glow 0.8s infinite alternate; }
+  @keyframes glow {
+    from { text-shadow: 0 0 4px var(--lime); }
+    to { text-shadow: 0 0 12px var(--lime); }
+  }
+  .quiz-progress-bar {
+    height: 6px;
+    background: var(--bg-2);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lime), var(--cyan));
+    transition: width 0.3s ease;
+  }
+
+  /* ---------- MATCH ---------- */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  @media (min-width: 640px) {
+    .match-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  }
+  .match-card {
+    background: var(--bg-2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--ink);
+    padding: 16px 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .match-card.term { background: var(--bg-2); }
+  .match-card.def { background: #1d0833; font-size: 12px; }
+  .match-card:hover:not(.matched):not(.selected) {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .match-card.selected {
+    border-color: var(--lime);
+    background: rgba(223, 255, 0, 0.15);
+    color: var(--lime);
+  }
+  .match-card.matched {
+    background: rgba(0, 255, 136, 0.15);
+    border-color: var(--green);
+    color: var(--green);
+    cursor: default;
+    animation: pop 0.4s ease;
+  }
+  .match-card.miss {
+    animation: shake 0.4s ease;
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ---------- RESULT SCREEN ---------- */
+  .result {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .result-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(24px, 5vw, 36px);
+    margin-bottom: 20px;
+    color: var(--lime);
+    text-shadow: 4px 4px 0 var(--pink);
+  }
+  .result-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(48px, 10vw, 80px);
+    color: var(--cyan);
+    margin: 16px 0;
+    font-weight: 700;
+  }
+  .result-msg {
+    font-size: 18px;
+    color: var(--ink-dim);
+    margin-bottom: 32px;
+  }
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--lime);
+    color: var(--bg);
+    border: none;
+    padding: 14px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn-primary:hover {
+    background: var(--pink);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--lime);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--ink-dim);
+    padding: 12px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn-secondary:hover { border-color: var(--ink); }
+
+  /* ---------- TIMER ---------- */
+  .timer-bar {
+    height: 4px;
+    background: var(--bg-2);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    height: 100%;
+    background: var(--lime);
+    width: 100%;
+    transition: width 0.1s linear, background 0.3s;
+  }
+  .timer-fill.warn { background: var(--pink); }
+  .timer-fill.danger { background: var(--red); }
+
+  /* ---------- BURST EFFECT ---------- */
+  .burst {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  /* ---------- FOOTER ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo" onclick="goHome()">★ CRAM ARCADE</div>
+    <div class="stats">
+      <div class="stat">HI-SCORE: <span id="hiscore">0</span></div>
+      <div class="stat">TERMS: <span id="termcount">0</span></div>
+    </div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div id="home" class="screen active">
+    <div class="hero">
+      <h1>READY TO <span class="accent">CRUSH</span><br>YOUR <span class="pink">FINALS?</span></h1>
+      <p>Three games. One mission. Lock these terms in.</p>
+      <div class="count">> <span id="termcount2">0</span> TERMS LOADED // PROGRESSIVE ERA</div>
+    </div>
+
+    <div class="games">
+      <div class="game-card" style="--accent: var(--lime);" onclick="startFlash()" tabindex="0">
+        <div class="num">// MODE 01</div>
+        <h3>FLASH CARDS</h3>
+        <p>Flip through every term at your own pace. Warmup mode.</p>
+      </div>
+      <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" tabindex="0">
+        <div class="num">// MODE 02</div>
+        <h3>SPEED QUIZ</h3>
+        <p>15 seconds per question. Build a streak. Don't miss.</p>
+      </div>
+      <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" tabindex="0">
+        <div class="num">// MODE 03</div>
+        <h3>MATCH UP</h3>
+        <p>Pair every term with its definition. Beat the clock.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="flash" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// FLASH CARDS</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="flashcard-stage">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="flashcard-face flashcard-front">
+          <div class="flashcard-label">TERM</div>
+          <div class="term" id="flashTerm">—</div>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <div class="flashcard-label">DEFINITION</div>
+          <div class="def" id="flashDef">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard-controls">
+      <button class="nav-btn" id="prevBtn" onclick="prevCard()">← PREV</button>
+      <div class="progress-dots" id="flashDots"></div>
+      <button class="nav-btn" id="nextBtn" onclick="nextCard()">NEXT →</button>
+    </div>
+    <p style="text-align:center; margin-top:16px; color:var(--ink-dim); font-size:13px; font-family:'JetBrains Mono', monospace;">
+      TAP CARD TO FLIP · ARROW KEYS WORK TOO
+    </p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// SPEED QUIZ</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="quiz-meta">
+      <div>Q <span id="qNum">1</span> / <span id="qTotal">10</span></div>
+      <div>SCORE: <span id="qScore" style="color:var(--lime); font-weight:700;">0</span></div>
+      <div>STREAK: <span id="qStreak" class="streak">0🔥</span></div>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div class="quiz-stage">
+      <div class="quiz-prompt">
+        <span class="label">DEFINITION</span>
+        <span id="qPrompt">—</span>
+      </div>
+      <div class="quiz-options" id="qOptions"></div>
+    </div>
+  </div>
+
+  <!-- MATCH -->
+  <div id="match" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// MATCH UP</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="quiz-meta">
+      <div>PAIRS: <span id="mPairs">0</span> / <span id="mTotal">5</span></div>
+      <div>TIME: <span id="mTime" style="color:var(--lime);">0s</span></div>
+      <div>MISSES: <span id="mMiss" style="color:var(--pink);">0</span></div>
+    </div>
+    <div class="match-grid" id="matchGrid"></div>
+    <p style="text-align:center; margin-top:8px; color:var(--ink-dim); font-size:13px; font-family:'JetBrains Mono', monospace;">
+      TAP A TERM, THEN TAP ITS DEFINITION
+    </p>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="screen">
+    <div class="result">
+      <div class="result-title" id="resultTitle">NICE!</div>
+      <div class="result-score" id="resultScore">0</div>
+      <div class="result-msg" id="resultMsg">—</div>
+      <div class="result-actions">
+        <button class="btn-primary" id="resultAgain">▶ PLAY AGAIN</button>
+        <button class="btn-secondary" onclick="goHome()">HOME</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    BUILT FOR CORBIN · UPDATE TERMS AT TOP OF HTML
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   👇 EDIT TERMS HERE — Just add or change items in this list.
+   Format: { term: "...", def: "..." }
+   ========================================================= */
+const TERMS = [
+  { term: "Progressive Movement", def: "Early 1900s reformers fixing problems from industrialization." },
+  { term: "Labor Union", def: "Group of workers joining together to demand better pay and conditions." },
+  { term: "Strike", def: "Workers refusing to work until demands are met." },
+  { term: "Muckraker", def: "Journalist who exposed corruption and social problems." },
+  { term: "Temperance Movement", def: "Movement to ban alcohol." },
+  { term: "Suffrage", def: "The right to vote." },
+  { term: "Yellow Journalism", def: "Exaggerated or fake news to sell papers." },
+  { term: "Imperialism", def: "Powerful countries taking control of weaker ones." },
+  { term: "Big Stick Diplomacy", def: "Roosevelt's policy: negotiate peacefully, but be ready to use force." },
+  { term: "The Square Deal", def: "Roosevelt's plan: protect consumers, control big business, conserve nature." }
+];
+/* ========================================================= */
+
+// ---------- UTILS ----------
+const $ = id => document.getElementById(id);
+const shuffle = a => { const x = [...a]; for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; };
+const pickN = (arr, n, exclude) => shuffle(arr.filter(x => x !== exclude)).slice(0, n);
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function goHome() { stopAllTimers(); showScreen('home'); }
+
+// ---------- STATS ----------
+function getHi() { return parseInt(localStorage.getItem('cram_hi') || '0', 10); }
+function setHi(v) {
+  const cur = getHi();
+  if (v > cur) { localStorage.setItem('cram_hi', v); renderStats(); return true; }
+  return false;
+}
+function renderStats() {
+  $('hiscore').textContent = getHi();
+  $('termcount').textContent = TERMS.length;
+  $('termcount2').textContent = TERMS.length;
+}
+
+// ---------- BURST EFFECT ----------
+function burst(x, y, color = '#dfff00') {
+  for (let i = 0; i < 14; i++) {
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.style.background = color;
+    b.style.left = x + 'px';
+    b.style.top = y + 'px';
+    document.body.appendChild(b);
+    const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.3;
+    const dist = 60 + Math.random() * 60;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    b.animate(
+      [
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
+      ],
+      { duration: 600, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)' }
+    ).onfinish = () => b.remove();
+  }
+}
+
+// ---------- FLASHCARDS ----------
+let flashOrder = [], flashIdx = 0, flashFlipped = false, seen = new Set();
+
+function startFlash() {
+  flashOrder = shuffle([...Array(TERMS.length).keys()]);
+  flashIdx = 0; seen = new Set();
+  renderFlash();
+  showScreen('flash');
+}
+function renderFlash() {
+  const t = TERMS[flashOrder[flashIdx]];
+  $('flashTerm').textContent = t.term;
+  $('flashDef').textContent = t.def;
+  $('flashcard').classList.remove('flipped');
+  flashFlipped = false;
+  $('prevBtn').disabled = flashIdx === 0;
+  $('nextBtn').disabled = flashIdx === flashOrder.length - 1;
+  // dots
+  const dots = $('flashDots');
+  dots.innerHTML = '';
+  flashOrder.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === flashIdx ? ' active' : seen.has(i) ? ' seen' : '');
+    dots.appendChild(d);
+  });
+  seen.add(flashIdx);
+}
+function flipCard() {
+  flashFlipped = !flashFlipped;
+  $('flashcard').classList.toggle('flipped');
+}
+function nextCard() { if (flashIdx < flashOrder.length - 1) { flashIdx++; renderFlash(); } }
+function prevCard() { if (flashIdx > 0) { flashIdx--; renderFlash(); } }
+
+document.addEventListener('keydown', e => {
+  if (!$('flash').classList.contains('active')) return;
+  if (e.key === 'ArrowRight') nextCard();
+  else if (e.key === 'ArrowLeft') prevCard();
+  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+});
+
+// ---------- QUIZ ----------
+let qOrder = [], qIdx = 0, qScore = 0, qStreak = 0, qBestStreak = 0, qTimer = null, qTimeLeft = 0;
+const Q_TIME = 15000; // 15s
+
+function startQuiz() {
+  qOrder = shuffle([...Array(TERMS.length).keys()]);
+  qIdx = 0; qScore = 0; qStreak = 0; qBestStreak = 0;
+  $('qTotal').textContent = qOrder.length;
+  nextQuestion();
+  showScreen('quiz');
+}
+function nextQuestion() {
+  if (qIdx >= qOrder.length) return endQuiz();
+  const t = TERMS[qOrder[qIdx]];
+  const distractors = pickN(TERMS, Math.min(3, TERMS.length - 1), t);
+  const options = shuffle([t, ...distractors]);
+
+  $('qNum').textContent = qIdx + 1;
+  $('qScore').textContent = qScore;
+  $('qStreak').innerHTML = qStreak + '🔥';
+  $('qStreak').className = 'streak' + (qStreak >= 3 ? ' hot' : '');
+  $('qPrompt').textContent = t.def;
+  $('qProgress').style.width = ((qIdx) / qOrder.length * 100) + '%';
+
+  const wrap = $('qOptions');
+  wrap.innerHTML = '';
+  options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'quiz-option';
+    b.textContent = opt.term;
+    b.onclick = e => answer(opt === t, b, e);
+    wrap.appendChild(b);
+  });
+
+  startQTimer();
+}
+function startQTimer() {
+  qTimeLeft = Q_TIME;
+  const fill = $('timerFill');
+  fill.style.transition = 'none';
+  fill.style.width = '100%';
+  fill.className = 'timer-fill';
+  // force reflow
+  void fill.offsetWidth;
+  fill.style.transition = 'width 0.1s linear, background 0.3s';
+
+  clearInterval(qTimer);
+  qTimer = setInterval(() => {
+    qTimeLeft -= 100;
+    const pct = Math.max(0, qTimeLeft / Q_TIME) * 100;
+    fill.style.width = pct + '%';
+    if (pct < 30 && pct >= 15) fill.className = 'timer-fill warn';
+    else if (pct < 15) fill.className = 'timer-fill danger';
+    if (qTimeLeft <= 0) {
+      clearInterval(qTimer);
+      timeOut();
+    }
+  }, 100);
+}
+function answer(correct, btn, ev) {
+  clearInterval(qTimer);
+  document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+    qScore += 10 + Math.floor(qTimeLeft / 100); // bonus for speed
+    qStreak++;
+    qBestStreak = Math.max(qBestStreak, qStreak);
+    burst(ev.clientX, ev.clientY, '#00ff88');
+  } else {
+    btn.classList.add('wrong');
+    qStreak = 0;
+    // highlight correct
+    document.querySelectorAll('.quiz-option').forEach(b => {
+      if (b.textContent === TERMS[qOrder[qIdx]].term) b.classList.add('correct');
+    });
+  }
+  $('qScore').textContent = qScore;
+  setTimeout(() => { qIdx++; nextQuestion(); }, 1100);
+}
+function timeOut() {
+  document.querySelectorAll('.quiz-option').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === TERMS[qOrder[qIdx]].term) b.classList.add('correct');
+  });
+  qStreak = 0;
+  setTimeout(() => { qIdx++; nextQuestion(); }, 1300);
+}
+function endQuiz() {
+  const isNewHi = setHi(qScore);
+  $('resultTitle').textContent = isNewHi ? 'NEW HI-SCORE!' : (qScore >= TERMS.length * 12 ? 'CRUSHED IT!' : qScore >= TERMS.length * 8 ? 'NICE RUN!' : 'KEEP GOING!');
+  $('resultScore').textContent = qScore;
+  $('resultMsg').textContent = `Best streak: ${qBestStreak}🔥 · ${qOrder.length} questions`;
+  $('resultAgain').onclick = startQuiz;
+  showScreen('result');
+}
+
+// ---------- MATCH ----------
+let mPicked = null, mMatched = 0, mMisses = 0, mTimer = null, mStart = 0;
+const MATCH_SIZE = 5; // pairs per round
+
+function startMatch() {
+  mPicked = null; mMatched = 0; mMisses = 0;
+  const picks = shuffle([...Array(TERMS.length).keys()]).slice(0, Math.min(MATCH_SIZE, TERMS.length));
+  const cards = [];
+  picks.forEach(i => {
+    cards.push({ type: 'term', idx: i, text: TERMS[i].term });
+    cards.push({ type: 'def', idx: i, text: TERMS[i].def });
+  });
+  const shuffled = shuffle(cards);
+  $('mTotal').textContent = picks.length;
+  $('mPairs').textContent = 0;
+  $('mMiss').textContent = 0;
+  const grid = $('matchGrid');
+  grid.innerHTML = '';
+  shuffled.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'match-card ' + c.type;
+    b.textContent = c.text;
+    b.dataset.idx = c.idx;
+    b.dataset.type = c.type;
+    b.onclick = e => pickMatch(b, e);
+    grid.appendChild(b);
+  });
+  mStart = Date.now();
+  clearInterval(mTimer);
+  mTimer = setInterval(() => {
+    $('mTime').textContent = Math.floor((Date.now() - mStart) / 1000) + 's';
+  }, 200);
+  showScreen('match');
+}
+function pickMatch(card, ev) {
+  if (card.classList.contains('matched') || card.classList.contains('selected')) return;
+  card.classList.add('selected');
+  if (!mPicked) { mPicked = card; return; }
+  // second pick
+  const a = mPicked, b = card;
+  if (a.dataset.idx === b.dataset.idx && a.dataset.type !== b.dataset.type) {
+    // match
+    a.classList.remove('selected'); b.classList.remove('selected');
+    a.classList.add('matched'); b.classList.add('matched');
+    mMatched++;
+    $('mPairs').textContent = mMatched;
+    burst(ev.clientX, ev.clientY, '#00ff88');
+    mPicked = null;
+    if (mMatched === parseInt($('mTotal').textContent, 10)) endMatch();
+  } else {
+    // miss
+    mMisses++;
+    $('mMiss').textContent = mMisses;
+    a.classList.add('miss'); b.classList.add('miss');
+    setTimeout(() => {
+      a.classList.remove('selected', 'miss');
+      b.classList.remove('selected', 'miss');
+    }, 600);
+    mPicked = null;
+  }
+}
+function endMatch() {
+  clearInterval(mTimer);
+  const secs = Math.floor((Date.now() - mStart) / 1000);
+  const score = Math.max(0, 500 - secs * 5 - mMisses * 15);
+  setHi(score);
+  $('resultTitle').textContent = mMisses === 0 ? 'PERFECT MATCH!' : 'MATCHED!';
+  $('resultScore').textContent = secs + 's';
+  $('resultMsg').textContent = `${mMisses} miss${mMisses === 1 ? '' : 'es'} · Score ${score}`;
+  $('resultAgain').onclick = startMatch;
+  showScreen('result');
+}
+
+function stopAllTimers() {
+  clearInterval(qTimer);
+  clearInterval(mTimer);
+}
+
+// ---------- INIT ----------
+renderStats();
+</script>
+</body>
+</html>
