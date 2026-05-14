@@ -110,6 +110,23 @@
     50%      { box-shadow: 0 0 0 4px rgba(255, 51, 102, 0.18); }
   }
 
+  /* ---------- STUDY TIMER (topbar) ---------- */
+  .study-timer {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 10px;
+    background: var(--bg-2); border: 2px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--cyan); white-space: nowrap;
+    transition: opacity 0.3s, border-color 0.3s;
+    min-width: 64px; justify-content: center;
+  }
+  .study-timer .t-icon { font-size: 12px; }
+  .study-timer.idle { opacity: 0.45; border-color: rgba(255,255,255,0.05); }
+  .study-timer.idle .t-val::after { content: ' ⏸'; font-size: 9px; }
+  @media (max-width: 480px) {
+    .study-timer { font-size: 10px; padding: 5px 7px; min-width: 56px; }
+  }
+
   /* ---------- DAILY BADGE (topbar) ---------- */
   .daily-badge {
     display: flex; align-items: center; gap: 6px;
@@ -550,6 +567,7 @@
   <div class="topbar">
     <div class="logo" onclick="goHome()">★ CRAM ARCADE</div>
     <div class="topbar-right">
+      <div class="study-timer" id="studyTimer" title="Active study time today"></div>
       <div class="daily-badge" id="dailyBadge" title="Daily goal"></div>
       <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Sound">🔊</button>
       <button class="icon-btn" onclick="openSettings()" title="Settings">⚙</button>
@@ -938,6 +956,8 @@ const ACHIEVEMENTS = [
   { id: 'streak_days_3', icon: '🔥', name: '3-Day Streak', desc: 'Study 3 days in a row' },
   { id: 'streak_days_5', icon: '💎', name: '5-Day Streak', desc: 'Study 5 days in a row' },
   { id: 'drilled_clean', icon: '🎯', name: 'Cleaned the Slate', desc: 'Clear all your missed terms' },
+  { id: 'study_30min', icon: '⏱️', name: 'Locked In', desc: 'Study for 30 minutes in a day' },
+  { id: 'study_60min', icon: '🧘', name: 'Deep Focus', desc: 'Study for 1 hour in a day' },
 ];
 /* ========================================================= */
 
@@ -1259,6 +1279,56 @@ function renderDailyBadge() {
   el.classList.toggle('done', done);
   el.innerHTML = `<span class="db-streak">🔥${s.streak}</span><span class="db-today">${Math.min(s.todayCount, DAILY_TARGET)}/${DAILY_TARGET}</span>`;
   el.title = done ? `Daily goal hit! Streak: ${s.streak}` : `Today: ${s.todayCount}/${DAILY_TARGET} terms. Streak: ${s.streak} days.`;
+}
+
+// ---------- STUDY TIMER ----------
+const IDLE_TIMEOUT_MS = 60_000; // pause if no interaction for 60s
+let lastInteractTs = Date.now();
+let studyTimerInterval = null;
+['mousemove','keydown','touchstart','click','scroll'].forEach(ev =>
+  document.addEventListener(ev, () => { lastInteractTs = Date.now(); }, { passive: true })
+);
+function getTimerState() {
+  const raw = localStorage.getItem('cram_timer');
+  const s = raw ? JSON.parse(raw) : { todaySecs: 0, todayDate: '', totalSecs: 0 };
+  if (s.todayDate !== todayStr()) { s.todaySecs = 0; s.todayDate = todayStr(); }
+  return s;
+}
+function saveTimerState(s) { localStorage.setItem('cram_timer', JSON.stringify(s)); }
+function startStudyTimer() {
+  if (studyTimerInterval) return;
+  studyTimerInterval = setInterval(() => {
+    if (document.hidden) return;
+    if (Date.now() - lastInteractTs > IDLE_TIMEOUT_MS) {
+      const el = $('studyTimer'); if (el) el.classList.add('idle');
+      return;
+    }
+    const el = $('studyTimer'); if (el) el.classList.remove('idle');
+    const s = getTimerState();
+    s.todaySecs++;
+    s.totalSecs++;
+    saveTimerState(s);
+    // Persist every tick is cheap; render every tick is also cheap (just text update)
+    renderStudyTimer();
+    // Achievement milestones (today)
+    if (s.todaySecs === 30 * 60) unlock('study_30min');
+    if (s.todaySecs === 60 * 60) unlock('study_60min');
+  }, 1000);
+}
+function formatTime(secs) {
+  secs = Math.max(0, Math.floor(secs));
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+function renderStudyTimer() {
+  const el = $('studyTimer');
+  if (!el) return;
+  const s = getTimerState();
+  el.innerHTML = `<span class="t-icon">⏱</span><span class="t-val">${formatTime(s.todaySecs)}</span>`;
+  el.title = `Active study today: ${formatTime(s.todaySecs)} · All-time: ${formatTime(s.totalSecs)}\n(Pauses after 60s idle or when tab is hidden.)`;
 }
 
 // ---------- COMBO JUICE ----------
@@ -1867,11 +1937,15 @@ function renderStatsScreen() {
   // top stats
   const grid = $('statsGrid');
   const unlocked = getUnlocked();
+  const t = getTimerState();
+  const masteredCount = getStat('terms_mastered');
   grid.innerHTML = `
     <div class="stat-card"><div class="num">${TERMS.length}</div><div class="label">Terms Loaded</div></div>
+    <div class="stat-card"><div class="num">${masteredCount}</div><div class="label">Terms Mastered</div></div>
     <div class="stat-card"><div class="num">${getStat('games_played')}</div><div class="label">Games Played</div></div>
     <div class="stat-card"><div class="num">${unlocked.length}/${ACHIEVEMENTS.length}</div><div class="label">Achievements</div></div>
-    <div class="stat-card"><div class="num">${getTopics().length - 1}</div><div class="label">Topics</div></div>
+    <div class="stat-card"><div class="num">${formatTime(t.todaySecs)}</div><div class="label">Study Time Today</div></div>
+    <div class="stat-card"><div class="num">${formatTime(t.totalSecs)}</div><div class="label">All-Time Study</div></div>
   `;
   // achievements
   const ag = $('achievementGrid');
@@ -1894,6 +1968,8 @@ Sound.init();
 renderTopicPills();
 renderStats();
 renderDailyBadge();
+renderStudyTimer();
+startStudyTimer();
 </script>
 </body>
 </html>
