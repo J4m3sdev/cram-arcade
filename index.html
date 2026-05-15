@@ -637,6 +637,216 @@
     position: fixed; inset: 0; pointer-events: none; z-index: 1000;
   }
 
+  /* ---------- USER PROFILE ---------- */
+  .profile-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-2); border: 2px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--ink); white-space: nowrap;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .profile-chip:hover { border-color: var(--lime); color: var(--lime); }
+  .profile-chip .pc-avatar { font-size: 16px; }
+  .profile-chip .pc-name {
+    text-transform: uppercase; letter-spacing: 0.5px;
+    max-width: 110px; overflow: hidden; text-overflow: ellipsis;
+  }
+  @media (max-width: 480px) {
+    .profile-chip { font-size: 10px; padding: 5px 9px; }
+    .profile-chip .pc-name { max-width: 80px; }
+  }
+  .hero-greet {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--cyan); letter-spacing: 1px;
+    margin-bottom: 12px; cursor: pointer;
+    transition: color 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .hero-greet:hover { color: var(--lime); }
+  .hero-greet .hg-avatar { font-size: 18px; }
+
+  /* Welcome / Edit Profile modals */
+  .welcome-content { text-align: center; }
+  .welcome-content h2 {
+    font-family: 'Press Start 2P', monospace; font-size: 13px;
+    color: var(--lime); margin-bottom: 12px; line-height: 1.6;
+  }
+  .welcome-content p {
+    color: var(--ink-dim); font-size: 13px; margin-bottom: 18px;
+  }
+  .name-input {
+    width: 100%; background: var(--bg-3);
+    border: 2px solid var(--ink-dim); color: var(--ink);
+    padding: 12px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 16px;
+    text-align: center; letter-spacing: 1px;
+    text-transform: uppercase; outline: none;
+    transition: all 0.15s;
+  }
+  .name-input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(223,255,0,0.2); }
+  .avatar-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+    margin: 12px 0 16px;
+  }
+  .avatar-cell {
+    cursor: pointer; padding: 10px 0;
+    background: var(--bg-3); border: 2px solid rgba(255,255,255,0.1);
+    text-align: center; font-size: 22px;
+    transition: all 0.12s;
+  }
+  .avatar-cell:hover { border-color: var(--ink); transform: translateY(-1px); }
+  .avatar-cell.active {
+    border-color: var(--lime);
+    box-shadow: 0 0 0 1px var(--lime) inset, 0 0 12px rgba(223,255,0,0.4);
+    background: linear-gradient(135deg, var(--bg-3), rgba(223,255,0,0.08));
+  }
+  .welcome-actions { display: flex; gap: 10px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+
+  /* Profile screen */
+  .profile-hero {
+    background: var(--bg-2); border: 2px solid var(--lime);
+    box-shadow: 6px 6px 0 var(--pink);
+    padding: 22px; text-align: center; margin: 16px 0 22px;
+  }
+  .profile-hero .ph-avatar {
+    font-size: 64px; margin-bottom: 8px;
+    display: inline-block;
+    text-shadow: 0 0 14px rgba(223,255,0,0.4);
+  }
+  .profile-hero .ph-name {
+    font-family: 'Press Start 2P', monospace; font-size: 18px;
+    color: var(--lime); letter-spacing: 1px; margin-bottom: 8px;
+    word-break: break-word;
+  }
+  .profile-hero .ph-sub {
+    color: var(--ink-dim); font-size: 12px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;
+  }
+  .profile-hero .ph-edit {
+    margin-top: 14px;
+  }
+  .scoreboard {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px; margin-bottom: 22px;
+  }
+  .score-row {
+    background: var(--bg-3); border: 2px solid rgba(255,255,255,0.08);
+    padding: 12px 10px; text-align: center;
+  }
+  .score-row .sr-mode {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: var(--ink-dim); letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .score-row .sr-val {
+    font-family: 'JetBrains Mono', monospace; font-size: 18px;
+    color: var(--lime); font-weight: 700;
+  }
+
+  /* ---------- BLITZ (falling terms) ---------- */
+  .blitz-stage {
+    position: relative;
+    height: clamp(420px, 65vh, 560px);
+    margin: 12px 0 16px;
+    background:
+      linear-gradient(180deg, rgba(0,229,255,0.05), transparent 40%, rgba(255,51,102,0.06)),
+      var(--bg-2);
+    border: 2px solid var(--cyan);
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
+  }
+  .blitz-stage.shake { animation: shake-small 0.3s ease; }
+  .blitz-term {
+    position: absolute; top: -50px;
+    background: var(--bg-3); border: 2px solid var(--cyan);
+    color: var(--ink);
+    padding: 9px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(11px, 1.5vw, 13px); font-weight: 700;
+    box-shadow: 0 0 10px rgba(0,229,255,0.35);
+    cursor: pointer;
+    max-width: 220px;
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-word;
+    will-change: transform, top;
+  }
+  .blitz-term.hit {
+    background: var(--green); color: var(--bg);
+    border-color: var(--green);
+    box-shadow: 0 0 18px var(--green);
+    animation: range-pop 0.35s ease forwards;
+  }
+  .blitz-term.miss {
+    background: var(--red); color: var(--bg);
+    border-color: var(--red); box-shadow: 0 0 18px var(--red);
+    animation: shake 0.3s ease;
+  }
+  .blitz-warning {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 8px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    opacity: 0.6;
+    box-shadow: 0 0 14px rgba(255,51,102,0.6);
+  }
+
+  /* ---------- MEMORY ---------- */
+  .memory-stage { margin: 14px 0; }
+  .memory-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  }
+  @media (min-width: 600px) {
+    .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  }
+  .memory-card {
+    aspect-ratio: 3 / 4; min-height: 90px;
+    background: var(--bg-2); border: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(10px, 1.4vw, 12px);
+    line-height: 1.3;
+    color: var(--ink); transition: all 0.18s;
+    word-break: break-word;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+  .memory-card.hidden-card {
+    color: transparent;
+    background:
+      linear-gradient(135deg, rgba(0,229,255,0.08), rgba(223,255,0,0.08)),
+      var(--bg-2);
+  }
+  .memory-card.hidden-card::after {
+    content: '?'; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cyan); font-size: 28px;
+    font-family: 'Press Start 2P', monospace;
+    opacity: 0.6;
+  }
+  .memory-card.flipped {
+    background: var(--bg-3); border-color: var(--lime);
+    animation: pop 0.3s ease;
+  }
+  .memory-card.matched {
+    background: rgba(0,255,136,0.15); border-color: var(--green);
+    color: var(--green); cursor: default;
+  }
+  .memory-card.mismatched {
+    border-color: var(--red); color: var(--red);
+    animation: shake 0.4s ease;
+  }
+  .memory-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-dim); flex-wrap: wrap; gap: 8px;
+  }
+  .memory-meta .pairs { color: var(--lime); font-weight: 700; }
+  .memory-meta .misses { color: var(--orange); font-weight: 700; }
+  .memory-meta .timer { color: var(--cyan); font-weight: 700; }
+
   /* ---------- TARGET RANGE ---------- */
   .range-stage {
     position: relative;
@@ -939,6 +1149,10 @@
   <!-- HOME -->
   <div id="home" class="screen active">
     <div class="hero">
+      <div class="hero-greet" id="heroGreet" onclick="openProfile()" title="View profile">
+        <span class="hg-avatar" id="heroAvatar">👋</span>
+        <span id="heroName">HEY THERE</span>
+      </div>
       <h1>READY TO <span class="accent">CRUSH</span><br>YOUR <span class="pink">FINALS?</span></h1>
       <p>Pick a topic. Pick a game. Lock it in.</p>
     </div>
@@ -961,23 +1175,28 @@
           <div class="num">// MODE 01</div><h3>FLASH CARDS</h3>
           <p>Flip through every term. Warmup mode.</p>
         </div>
+        <div class="game-card" style="--accent: var(--cyan);" onclick="startMemory()" role="button" tabindex="0" aria-label="Mode 2: Memory">
+          <div class="num">// MODE 02</div><h3>MEMORY 🧩</h3>
+          <p>Flip cards to find term + def pairs.</p>
+          <div class="hi" id="hiMemory">BEST: --</div>
+        </div>
       </div>
     </div>
     <div class="games-group test">
       <div class="games-group-label">// TEST YOURSELF</div>
       <div class="games">
-        <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" role="button" tabindex="0" aria-label="Mode 2: Speed Quiz">
-          <div class="num">// MODE 02</div><h3>SPEED QUIZ</h3>
+        <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" role="button" tabindex="0" aria-label="Mode 3: Speed Quiz">
+          <div class="num">// MODE 03</div><h3>SPEED QUIZ</h3>
           <p>10 questions, 15 sec each. Build a streak.</p>
           <div class="hi" id="hiQuiz">HI-SCORE: 0</div>
         </div>
-        <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" role="button" tabindex="0" aria-label="Mode 3: Match Up">
-          <div class="num">// MODE 03</div><h3>MATCH UP</h3>
+        <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" role="button" tabindex="0" aria-label="Mode 4: Match Up">
+          <div class="num">// MODE 04</div><h3>MATCH UP</h3>
           <p>Pair terms to definitions. Beat the clock.</p>
           <div class="hi" id="hiMatch">BEST TIME: --</div>
         </div>
-        <div class="game-card" style="--accent: var(--orange);" onclick="startType()" role="button" tabindex="0" aria-label="Mode 4: Type It">
-          <div class="num">// MODE 04</div><h3>TYPE IT</h3>
+        <div class="game-card" style="--accent: var(--orange);" onclick="startType()" role="button" tabindex="0" aria-label="Mode 5: Type It">
+          <div class="num">// MODE 05</div><h3>TYPE IT</h3>
           <p>Read the def. Type the term. True recall.</p>
           <div class="hi" id="hiType">HI-SCORE: 0</div>
         </div>
@@ -986,15 +1205,20 @@
     <div class="games-group challenge">
       <div class="games-group-label">// CHALLENGE</div>
       <div class="games">
-        <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" role="button" tabindex="0" aria-label="Mode 5: Survival">
-          <div class="num">// MODE 05</div><h3>SURVIVAL</h3>
+        <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" role="button" tabindex="0" aria-label="Mode 6: Survival">
+          <div class="num">// MODE 06</div><h3>SURVIVAL</h3>
           <p>3 lives. Endless rounds. How long can you last?</p>
           <div class="hi" id="hiSurv">RECORD: 0</div>
         </div>
-        <div class="game-card" style="--accent: var(--orange);" onclick="startRange()" role="button" tabindex="0" aria-label="Mode 6: Target Range">
-          <div class="num">// MODE 06</div><h3>TARGET RANGE 🎯</h3>
+        <div class="game-card" style="--accent: var(--orange);" onclick="startRange()" role="button" tabindex="0" aria-label="Mode 7: Target Range">
+          <div class="num">// MODE 07</div><h3>TARGET RANGE 🎯</h3>
           <p>Shoot the right term. Don't miss. 10 rounds.</p>
           <div class="hi" id="hiRange">HI-SCORE: 0</div>
+        </div>
+        <div class="game-card" style="--accent: var(--cyan);" onclick="startBlitz()" role="button" tabindex="0" aria-label="Mode 8: Blitz">
+          <div class="num">// MODE 08</div><h3>BLITZ ⚡</h3>
+          <p>Terms fall fast. Tap the right one. Endless.</p>
+          <div class="hi" id="hiBlitz">HI-SCORE: 0</div>
         </div>
       </div>
     </div>
@@ -1002,13 +1226,14 @@
       <div class="games-group-label">// BOSS</div>
       <div class="games">
         <div class="game-card boss-card locked" id="bossCard" style="--accent: var(--pink);" onclick="startBoss()" role="button" tabindex="0" aria-label="Boss mode">
-          <div class="num">// MODE 07 · BOSS</div><h3 id="bossTitle">🔒 FINAL BOSS</h3>
+          <div class="num">// MODE 09 · BOSS</div><h3 id="bossTitle">🔒 FINAL BOSS</h3>
           <p id="bossDesc">Master 25 terms to unlock.</p>
           <div class="hi" id="hiBoss">HI-SCORE: 0</div>
         </div>
       </div>
     </div>
     <div class="util-row">
+      <button class="util-btn" onclick="openProfile()">👤 PROFILE</button>
       <button class="util-btn" onclick="openStats()">📊 STATS &amp; BADGES</button>
     </div>
   </div>
@@ -1133,6 +1358,65 @@
     </div>
   </div>
 
+  <!-- MEMORY -->
+  <div id="memory" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// MEMORY 🧩</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="memory-meta">
+      <div>PAIRS: <span id="mePairs" class="pairs">0/0</span></div>
+      <div>MISSES: <span id="meMisses" class="misses">0</span></div>
+      <div>TIME: <span id="meTime" class="timer">0s</span></div>
+    </div>
+    <div class="memory-stage">
+      <div class="memory-grid" id="memGrid"></div>
+    </div>
+    <p style="text-align:center; margin-top:14px; color:var(--ink-dim); font-size:12px; font-family:'JetBrains Mono', monospace;">
+      FLIP TWO AT A TIME · MATCH TERM TO DEFINITION
+    </p>
+  </div>
+
+  <!-- BLITZ -->
+  <div id="blitz" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// BLITZ ⚡</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="range-hud">
+      <div>WAVE: <span id="bWave">1</span></div>
+      <div>SCORE: <span id="bScore" style="color:var(--cyan); font-weight:700;">0</span></div>
+      <div>STREAK: <span id="bStreak" class="streak">0🔥</span></div>
+      <div>LIVES: <span id="bLives" class="lives">❤❤❤</span></div>
+    </div>
+    <div class="range-prompt" style="border-left-color: var(--cyan);">
+      <span class="label" style="color: var(--cyan);">TAP THE TERM THAT MATCHES</span>
+      <span id="bPrompt">—</span>
+    </div>
+    <div class="blitz-stage" id="bStage">
+      <div class="blitz-warning"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// PROFILE</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="profile-hero">
+      <div class="ph-avatar" id="prAvatar">🎮</div>
+      <div class="ph-name" id="prName">PLAYER 1</div>
+      <div class="ph-sub" id="prSub">CRAMMER SINCE TODAY</div>
+      <button class="back-btn ph-edit" onclick="openEditProfile()">✎ EDIT</button>
+    </div>
+    <div class="stats-grid" id="prStats"></div>
+    <div class="section-title">// HI-SCORES</div>
+    <div class="scoreboard" id="prScoreboard"></div>
+    <div class="section-title">// RECENT BADGES</div>
+    <div class="achievement-grid" id="prRecentAch"></div>
+  </div>
+
   <!-- TARGET RANGE -->
   <div id="range" class="screen">
     <div class="screen-header">
@@ -1184,7 +1468,7 @@
     <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 
-  <div class="footer">BUILT FOR CORBIN · v6 · 7 MODES · THEMES · TARGET RANGE · BOSS</div>
+  <div class="footer">BUILT FOR CORBIN · v7 · 9 MODES · PROFILE · THEMES · BLITZ · MEMORY</div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -1231,6 +1515,39 @@
         <span class="setting-label" style="margin: 0; font-size: 13px;">RESET ALL DATA</span>
         <button class="toggle-btn" onclick="resetAll()" style="color: var(--red); border-color: var(--red);">RESET</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME MODAL (first visit) -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal welcome-content">
+    <h2>★ WELCOME TO<br>CORBIN'S CRAM ARCADE ★</h2>
+    <p>Pick a name and a player icon to get started.</p>
+    <input type="text" class="name-input" id="welcomeName" maxlength="14" placeholder="YOUR NAME" autocomplete="off">
+    <div class="avatar-grid" id="welcomeAvatars"></div>
+    <div class="welcome-actions">
+      <button class="btn-primary" onclick="finishWelcome()">▶ LET'S GO</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="editProfileModal" onclick="if(event.target===this)closeEditProfile()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEditProfile()">×</button>
+    <div class="modal-title">// EDIT PROFILE</div>
+    <div class="setting-row">
+      <div class="setting-label"><span>NAME</span></div>
+      <input type="text" class="name-input" id="editName" maxlength="14" autocomplete="off">
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>ICON</span></div>
+      <div class="avatar-grid" id="editAvatars"></div>
+    </div>
+    <div class="welcome-actions">
+      <button class="btn-primary" onclick="saveEditProfile()">💾 SAVE</button>
+      <button class="btn-secondary" onclick="closeEditProfile()">CANCEL</button>
     </div>
   </div>
 </div>
@@ -1407,6 +1724,24 @@ const ACHIEVEMENTS = [
   { id: 'audiophile', icon: '🎧', name: 'Audiophile', desc: 'Listen to every track' },
   { id: 'centurion', icon: '💯', name: 'Centurion', desc: 'Play 100 games' },
   { id: 'topic_dominator', icon: '🏆', name: 'Topic Dominator', desc: 'Master every topic on the board' },
+  // v7 — profile + new games + harder tiers
+  { id: 'welcome_aboard', icon: '🎉', name: 'Welcome Aboard', desc: 'Set up your profile' },
+  { id: 'name_change', icon: '✎', name: 'Identity Crisis', desc: 'Edit your name or icon' },
+  { id: 'memory_started', icon: '🧩', name: 'Brain Teaser', desc: 'Try Memory mode' },
+  { id: 'memory_perfect', icon: '🌟', name: 'Photographic', desc: 'Beat Memory with zero misses' },
+  { id: 'memory_speed', icon: '⏱️', name: 'Snap Recall', desc: 'Beat Memory in under 45 seconds' },
+  { id: 'blitz_started', icon: '⚡', name: 'Quick Reflexes', desc: 'Try Blitz mode' },
+  { id: 'blitz_25', icon: '🌪️', name: 'Storm Chaser', desc: 'Score 25+ in Blitz' },
+  { id: 'blitz_50', icon: '💎', name: 'Blitz Legend', desc: 'Score 50+ in Blitz' },
+  { id: 'all_modes', icon: '🎮', name: 'Completionist', desc: 'Try every single game mode' },
+  { id: 'streak_15', icon: '⚡', name: 'Untouchable', desc: 'Hit a 15-question streak' },
+  { id: 'streak_25', icon: '🔱', name: 'Inhuman', desc: 'Hit a 25-question streak' },
+  { id: 'games_200', icon: '🚀', name: 'Veteran', desc: 'Play 200 games' },
+  { id: 'study_2hr', icon: '🦉', name: 'Marathon', desc: 'Study 2 hours in a day' },
+  { id: 'study_streak_7', icon: '📅', name: 'Week Long', desc: 'Study 7 days in a row' },
+  { id: 'drilled_50', icon: '🎯', name: 'Drilled In', desc: 'Drill 50 missed terms total' },
+  { id: 'night_owl', icon: '🌙', name: 'Night Owl', desc: 'Study after 10pm' },
+  { id: 'early_bird', icon: '🌅', name: 'Early Bird', desc: 'Study before 7am' },
 ];
 /* ========================================================= */
 
@@ -1680,6 +2015,8 @@ function goHome() {
   stopAllTimers();
   exitBossMode();
   exitRange();
+  exitBlitz();
+  exitMemory();
   hideNextUp();
   Sound.click();
   showScreen('home');
@@ -1689,10 +2026,424 @@ function goHome() {
   renderFinalsCard();
   renderQuickPlay();
   renderBossCard();
+  renderHeroGreet();
 }
 function exitRange() {
   rActive = false;
   if (rTargetEls) { rTargetEls.forEach(el => el.remove()); rTargetEls = []; }
+}
+
+// ---------- USER PROFILE ----------
+const AVATARS = ['🎮','🚀','⚡','🐉','👑','🦅','🐺','👻','⭐','🎯','🧠','🦁','🦊','🐯','🌟','🔥','💎','🤖'];
+function getUser() {
+  return {
+    name: (localStorage.getItem('cram_username') || '').toUpperCase(),
+    avatar: localStorage.getItem('cram_avatar') || '🎮',
+    createdAt: localStorage.getItem('cram_user_since') || todayStr(),
+  };
+}
+function saveUser(name, avatar) {
+  const clean = (name || '').trim().slice(0, 14).toUpperCase();
+  if (!localStorage.getItem('cram_user_since')) {
+    localStorage.setItem('cram_user_since', todayStr());
+  }
+  if (clean) localStorage.setItem('cram_username', clean);
+  if (avatar) localStorage.setItem('cram_avatar', avatar);
+  renderHeroGreet();
+}
+function renderHeroGreet() {
+  const u = getUser();
+  const av = $('heroAvatar');
+  const nm = $('heroName');
+  if (av) av.textContent = u.name ? u.avatar : '👋';
+  if (nm) nm.textContent = u.name ? `HEY ${u.name}` : 'HEY THERE';
+}
+function renderAvatarGrid(containerId, currentAvatar, onPick) {
+  const grid = $(containerId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  AVATARS.forEach(em => {
+    const cell = document.createElement('div');
+    cell.className = 'avatar-cell' + (em === currentAvatar ? ' active' : '');
+    cell.textContent = em;
+    cell.onclick = () => {
+      grid.querySelectorAll('.avatar-cell').forEach(c => c.classList.remove('active'));
+      cell.classList.add('active');
+      onPick(em);
+    };
+    grid.appendChild(cell);
+  });
+}
+let welcomeAvatarChoice = '🎮';
+function openWelcome() {
+  welcomeAvatarChoice = '🎮';
+  $('welcomeName').value = '';
+  renderAvatarGrid('welcomeAvatars', welcomeAvatarChoice, em => { welcomeAvatarChoice = em; });
+  $('welcomeModal').classList.add('active');
+  setTimeout(() => $('welcomeName').focus(), 200);
+}
+function finishWelcome() {
+  const name = ($('welcomeName').value || '').trim();
+  if (!name) { $('welcomeName').focus(); return; }
+  saveUser(name, welcomeAvatarChoice);
+  $('welcomeModal').classList.remove('active');
+  Sound.click();
+  unlock('welcome_aboard');
+}
+let editAvatarChoice = '🎮';
+function openEditProfile() {
+  Sound.click();
+  const u = getUser();
+  editAvatarChoice = u.avatar;
+  $('editName').value = u.name;
+  renderAvatarGrid('editAvatars', editAvatarChoice, em => { editAvatarChoice = em; });
+  $('editProfileModal').classList.add('active');
+}
+function closeEditProfile() {
+  Sound.click();
+  $('editProfileModal').classList.remove('active');
+}
+function saveEditProfile() {
+  const name = ($('editName').value || '').trim();
+  if (!name) { $('editName').focus(); return; }
+  const u = getUser();
+  saveUser(name, editAvatarChoice);
+  if (name.toUpperCase() !== u.name || editAvatarChoice !== u.avatar) unlock('name_change');
+  $('editProfileModal').classList.remove('active');
+  if ($('profile').classList.contains('active')) renderProfileScreen();
+  Sound.click();
+}
+function openProfile() {
+  Sound.click();
+  renderProfileScreen();
+  showScreen('profile');
+}
+function renderProfileScreen() {
+  const u = getUser();
+  $('prAvatar').textContent = u.avatar;
+  $('prName').textContent = u.name || 'PLAYER 1';
+  const since = u.createdAt;
+  const sinceLabel = since === todayStr() ? 'TODAY' : since.replace(/-/g, '/');
+  $('prSub').textContent = `CRAMMER SINCE ${sinceLabel}`;
+  // stats grid
+  const grid = $('prStats');
+  const t = getTimerState();
+  const unlocked = getUnlocked();
+  const masteredCount = getStat('terms_mastered');
+  grid.innerHTML = `
+    <div class="stat-card"><div class="num">${masteredCount}</div><div class="label">Mastered</div></div>
+    <div class="stat-card"><div class="num">${getStat('games_played')}</div><div class="label">Games</div></div>
+    <div class="stat-card"><div class="num">${unlocked.length}/${ACHIEVEMENTS.length}</div><div class="label">Badges</div></div>
+    <div class="stat-card"><div class="num">${formatTime(t.totalSecs)}</div><div class="label">Study Time</div></div>
+  `;
+  // hi-scores per mode
+  const sb = $('prScoreboard');
+  const modes = [
+    { mode: 'quiz', label: 'SPEED QUIZ', fmt: v => v },
+    { mode: 'type', label: 'TYPE IT', fmt: v => v },
+    { mode: 'surv', label: 'SURVIVAL', fmt: v => v },
+    { mode: 'match', label: 'MATCH UP', fmt: v => v > 0 ? v + 's' : '--' },
+    { mode: 'range', label: 'TARGET RANGE', fmt: v => v },
+    { mode: 'blitz', label: 'BLITZ', fmt: v => v },
+    { mode: 'memory', label: 'MEMORY', fmt: v => v > 0 ? v + 's' : '--' },
+  ];
+  sb.innerHTML = modes.map(m => {
+    const v = parseInt(localStorage.getItem(`cram_${m.mode}_ALL`) || '0', 10);
+    return `<div class="score-row"><div class="sr-mode">${m.label}</div><div class="sr-val">${m.fmt(v)}</div></div>`;
+  }).join('');
+  const bossHi = parseInt(localStorage.getItem('cram_boss_hi') || '0', 10);
+  sb.innerHTML += `<div class="score-row"><div class="sr-mode">FINAL BOSS</div><div class="sr-val">${bossHi}</div></div>`;
+  // recent badges (last 6)
+  const recent = $('prRecentAch');
+  recent.innerHTML = '';
+  const recentIds = unlocked.slice(-6).reverse();
+  if (recentIds.length === 0) {
+    recent.innerHTML = `<div class="ph-sub" style="grid-column:1/-1; text-align:center;">No badges yet — play a game!</div>`;
+  } else {
+    recentIds.forEach(id => {
+      const a = ACHIEVEMENTS.find(x => x.id === id);
+      if (!a) return;
+      const div = document.createElement('div');
+      div.className = 'achievement unlocked';
+      div.innerHTML = `
+        <div class="achievement-icon">${a.icon}</div>
+        <div class="achievement-name">${a.name}</div>
+        <div class="achievement-desc">${a.desc}</div>`;
+      recent.appendChild(div);
+    });
+  }
+}
+
+// ---------- TIME-OF-DAY ACHIEVEMENTS ----------
+function checkTimeOfDayAchievements() {
+  const h = new Date().getHours();
+  if (h >= 22 || h < 5) unlock('night_owl');
+  if (h >= 5 && h < 7) unlock('early_bird');
+}
+
+// ---------- MEMORY 🧩 ----------
+const MEMORY_PAIRS = 6;
+let memCards = [], memFlipped = [], memMatched = 0, memMisses = 0, memTimer = null, memStart = 0, memActive = false;
+function startMemory() {
+  ensureAudio(); markGameTried('memory');
+  const pool = getActiveTerms();
+  if (pool.length < MEMORY_PAIRS) { showSnack(`Need at least ${MEMORY_PAIRS} terms in this filter for Memory`); return; }
+  const picks = shuffle(pool).slice(0, MEMORY_PAIRS);
+  memCards = shuffle(picks.flatMap(t => [
+    { kind: 'term', label: t.term, key: t.term },
+    { kind: 'def', label: t.def, key: t.term }
+  ]));
+  memFlipped = []; memMatched = 0; memMisses = 0;
+  memActive = true; memStart = Date.now();
+  $('mePairs').textContent = `0/${MEMORY_PAIRS}`;
+  $('meMisses').textContent = '0';
+  $('meTime').textContent = '0s';
+  renderMemoryGrid();
+  unlock('memory_started');
+  clearInterval(memTimer);
+  memTimer = setInterval(() => {
+    if (!memActive) return;
+    $('meTime').textContent = Math.floor((Date.now() - memStart) / 1000) + 's';
+  }, 250);
+  Sound.click(); showScreen('memory');
+}
+function renderMemoryGrid() {
+  const grid = $('memGrid');
+  grid.innerHTML = '';
+  memCards.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'memory-card hidden-card';
+    el.dataset.idx = i;
+    el.textContent = c.label;
+    el.onclick = () => flipMemoryCard(i, el);
+    grid.appendChild(el);
+  });
+}
+function flipMemoryCard(idx, el) {
+  if (!memActive) return;
+  if (el.classList.contains('matched') || el.classList.contains('flipped')) return;
+  if (memFlipped.length >= 2) return;
+  el.classList.remove('hidden-card');
+  el.classList.add('flipped');
+  Sound.flip();
+  memFlipped.push({ idx, el });
+  if (memFlipped.length === 2) {
+    const [a, b] = memFlipped;
+    const cardA = memCards[a.idx], cardB = memCards[b.idx];
+    if (cardA.key === cardB.key && cardA.kind !== cardB.kind) {
+      // match
+      setTimeout(() => {
+        a.el.classList.remove('flipped'); a.el.classList.add('matched');
+        b.el.classList.remove('flipped'); b.el.classList.add('matched');
+        memMatched++;
+        $('mePairs').textContent = `${memMatched}/${MEMORY_PAIRS}`;
+        Sound.match();
+        recordTermResult(cardA.key, true);
+        memFlipped = [];
+        if (memMatched >= MEMORY_PAIRS) endMemory();
+      }, 350);
+    } else {
+      // mismatch
+      memMisses++;
+      $('meMisses').textContent = String(memMisses);
+      Sound.wrong();
+      a.el.classList.add('mismatched');
+      b.el.classList.add('mismatched');
+      // count one wrong against the term they thought (recordTermResult on cardA's key)
+      if (cardA.kind === 'term') recordTermResult(cardA.key, false);
+      else if (cardB.kind === 'term') recordTermResult(cardB.key, false);
+      setTimeout(() => {
+        a.el.classList.remove('flipped','mismatched'); a.el.classList.add('hidden-card');
+        b.el.classList.remove('flipped','mismatched'); b.el.classList.add('hidden-card');
+        memFlipped = [];
+      }, 700);
+    }
+  }
+}
+function endMemory() {
+  memActive = false;
+  clearInterval(memTimer);
+  const secs = Math.floor((Date.now() - memStart) / 1000);
+  const isNewBest = setHi('memory', secs, true);
+  Sound.victory();
+  bumpStat('games_played');
+  if (memMisses === 0) unlock('memory_perfect');
+  if (secs <= 45) unlock('memory_speed');
+  if (isNewBest) fireConfetti(80);
+  $('resultTitle').textContent = memMisses === 0 ? 'PHOTOGRAPHIC!' : (isNewBest ? 'NEW BEST TIME!' : 'NICE!');
+  $('resultScore').textContent = secs + 's';
+  $('resultMsg').textContent = `${memMatched} pair${memMatched === 1 ? '' : 's'} matched · ${memMisses} miss${memMisses === 1 ? '' : 'es'}`;
+  $('resultAgain').onclick = startMemory;
+  showNextUp('memory');
+  showScreen('result');
+}
+function exitMemory() {
+  memActive = false;
+  clearInterval(memTimer);
+}
+
+// ---------- BLITZ ⚡ (falling terms) ----------
+let blActive = false, blScore = 0, blStreak = 0, blBest = 0, blLives = 3, blWave = 0;
+let blFallTimer = null, blSpawnTimeout = null, blTerms = [];
+let blFallingEls = []; // [{ el, term, def, rafTop, speed, isCorrect, correctTerm }]
+let blCurrentCorrect = null;
+let blFrame = null;
+function startBlitz() {
+  ensureAudio(); markGameTried('blitz');
+  blTerms = getActiveTerms();
+  if (blTerms.length < 4) { showSnack('Need at least 4 terms in this filter for Blitz'); return; }
+  blActive = true; blScore = 0; blStreak = 0; blBest = 0; blLives = 3; blWave = 0;
+  updateBlitzHud();
+  unlock('blitz_started');
+  // clear stage of any old terms
+  const stage = $('bStage');
+  [...stage.querySelectorAll('.blitz-term')].forEach(el => el.remove());
+  blFallingEls = [];
+  blCurrentCorrect = null;
+  Sound.click(); showScreen('blitz');
+  // start the loop
+  blFrame = requestAnimationFrame(blitzLoop);
+  nextBlitzWave();
+}
+function updateBlitzHud() {
+  $('bWave').textContent = blWave;
+  $('bScore').textContent = blScore;
+  $('bStreak').textContent = blStreak + '🔥';
+  $('bLives').textContent = '❤'.repeat(Math.max(0, blLives)) || '—';
+}
+function nextBlitzWave() {
+  if (!blActive) return;
+  blWave++;
+  // pick correct term
+  const correct = blTerms[Math.floor(Math.random() * blTerms.length)];
+  blCurrentCorrect = correct.term;
+  $('bPrompt').textContent = correct.def;
+  // spawn one correct + N distractors falling over time
+  const distractors = shuffle(blTerms.filter(t => t.term !== correct.term)).slice(0, 3);
+  const all = shuffle([correct, ...distractors]);
+  // scale speed/spacing with wave count
+  const speed = Math.min(1.8, 0.55 + blWave * 0.06); // px per frame at 60fps reference
+  const spawnGap = Math.max(450, 1100 - blWave * 35);
+  all.forEach((t, i) => {
+    setTimeout(() => { if (blActive) spawnBlitzTerm(t.term, t.term === correct.term, speed); }, i * spawnGap);
+  });
+  updateBlitzHud();
+}
+function spawnBlitzTerm(termStr, isCorrect, speed) {
+  if (!blActive) return;
+  const stage = $('bStage');
+  const sw = stage.clientWidth;
+  const el = document.createElement('div');
+  el.className = 'blitz-term';
+  el.textContent = termStr;
+  const x = 12 + Math.random() * (sw - 240);
+  el.style.left = x + 'px';
+  el.style.top = '-50px';
+  stage.appendChild(el);
+  const entry = { el, term: termStr, isCorrect, top: -50, speed };
+  el.onclick = ev => { ev.stopPropagation(); resolveBlitzTap(entry, ev); };
+  blFallingEls.push(entry);
+}
+function blitzLoop(_t) {
+  if (!blActive) return;
+  const stage = $('bStage');
+  if (!stage) return;
+  const sh = stage.clientHeight;
+  for (let i = blFallingEls.length - 1; i >= 0; i--) {
+    const e = blFallingEls[i];
+    e.top += e.speed;
+    e.el.style.top = e.top + 'px';
+    if (e.top > sh) {
+      // fell off bottom
+      const wasCorrect = e.isCorrect && blCurrentCorrect === e.term;
+      e.el.remove();
+      blFallingEls.splice(i, 1);
+      if (wasCorrect) {
+        // missed the correct term -> lose a life, clear the wave, spawn new
+        blLives--; blStreak = 0;
+        blCurrentCorrect = null;
+        Sound.wrong();
+        stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake');
+        recordTermResult(e.term, false);
+        // remove ALL falling terms from this stale wave
+        for (let j = blFallingEls.length - 1; j >= 0; j--) {
+          blFallingEls[j].el.remove();
+          blFallingEls.splice(j, 1);
+        }
+        updateBlitzHud();
+        if (blLives <= 0) { endBlitz(); return; }
+        nextBlitzWave();
+      }
+    }
+  }
+  blFrame = requestAnimationFrame(blitzLoop);
+}
+function resolveBlitzTap(entry, ev) {
+  if (!blActive) return;
+  const stage = $('bStage');
+  if (entry.isCorrect && entry.term === blCurrentCorrect) {
+    entry.el.classList.add('hit');
+    blScore += 10 + blStreak;
+    blStreak++;
+    blBest = Math.max(blBest, blStreak);
+    // Immediately invalidate this wave so loop won't re-trigger missed-correct
+    blCurrentCorrect = null;
+    Sound.correct();
+    burst(ev.clientX, ev.clientY, '#00ff88');
+    recordTermResult(entry.term, true);
+    if (blStreak >= 5) unlock('streak_5');
+    if (blStreak >= 10) unlock('streak_10');
+    if (blStreak >= 15) unlock('streak_15');
+    if (blStreak >= 25) unlock('streak_25');
+    triggerCombo(blStreak);
+    // remove all currently falling and start next wave
+    setTimeout(() => {
+      blFallingEls.forEach(e => e.el.remove());
+      blFallingEls = [];
+      nextBlitzWave();
+    }, 350);
+  } else {
+    entry.el.classList.add('miss');
+    blLives--; blStreak = 0;
+    Sound.wrong();
+    burst(ev.clientX, ev.clientY, '#ff3366');
+    // Record the CORRECT term as wrong — user failed to recognize it
+    if (blCurrentCorrect) recordTermResult(blCurrentCorrect, false);
+    stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake');
+    setTimeout(() => entry.el.remove(), 350);
+    blFallingEls = blFallingEls.filter(x => x !== entry);
+    updateBlitzHud();
+    if (blLives <= 0) endBlitz();
+  }
+  updateBlitzHud();
+}
+function endBlitz() {
+  blActive = false;
+  if (blFrame) cancelAnimationFrame(blFrame);
+  blFrame = null;
+  const stage = $('bStage');
+  if (stage) [...stage.querySelectorAll('.blitz-term')].forEach(el => el.remove());
+  blFallingEls = [];
+  const isNewHi = setHi('blitz', blScore);
+  Sound.victory();
+  bumpStat('games_played');
+  if (blScore >= 25) unlock('blitz_25');
+  if (blScore >= 50) unlock('blitz_50');
+  if (isNewHi) fireConfetti(60);
+  $('resultTitle').textContent = isNewHi ? 'NEW HI-SCORE!' : (blScore >= 50 ? 'LEGENDARY!' : blScore >= 25 ? 'STORM CHASER!' : 'KEEP GOING!');
+  $('resultScore').textContent = blScore;
+  $('resultMsg').textContent = `Wave ${blWave} · Best streak ${blBest}🔥`;
+  $('resultAgain').onclick = startBlitz;
+  showNextUp('blitz');
+  showScreen('result');
+}
+function exitBlitz() {
+  blActive = false;
+  if (blFrame) cancelAnimationFrame(blFrame);
+  blFrame = null;
+  const stage = $('bStage');
+  if (stage) [...stage.querySelectorAll('.blitz-term')].forEach(el => el.remove());
+  blFallingEls = [];
 }
 
 // ---------- HI-SCORES ----------
@@ -1711,8 +2462,11 @@ function renderStats() {
   $('hiType').textContent = `HI-SCORE: ${getHi('type')}`;
   $('hiSurv').textContent = `RECORD: ${getHi('surv')}`;
   $('hiRange').textContent = `HI-SCORE: ${getHi('range')}`;
+  $('hiBlitz').textContent = `HI-SCORE: ${getHi('blitz')}`;
   const matchBest = getHi('match');
   $('hiMatch').textContent = matchBest > 0 ? `BEST TIME: ${matchBest}s` : 'BEST TIME: --';
+  const memBest = getHi('memory');
+  $('hiMemory').textContent = memBest > 0 ? `BEST: ${memBest}s` : 'BEST: --';
 }
 
 // ---------- ACHIEVEMENTS ----------
@@ -1726,12 +2480,16 @@ function unlock(id) {
   if (a) showToast(a);
   return true;
 }
+// All 9 game modes count toward 'all_modes'. 'all_games' (Arcade Champ) is the older 5-mode milestone.
+const ALL_MODE_IDS = ['flash','quiz','match','type','surv','range','blitz','memory','boss'];
 function markGameTried(mode) {
   const tried = JSON.parse(localStorage.getItem('cram_tried') || '[]');
   if (!tried.includes(mode)) {
     tried.push(mode);
     localStorage.setItem('cram_tried', JSON.stringify(tried));
     if (tried.length >= 5) unlock('all_games');
+    const triedAll = ALL_MODE_IDS.every(m => tried.includes(m));
+    if (triedAll) unlock('all_modes');
   }
 }
 let toastQueue = [], toastActive = false;
@@ -1756,7 +2514,11 @@ function drainToastQueue() {
 function bumpStat(key, by = 1) {
   const cur = parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10) + by;
   localStorage.setItem('cram_stat_' + key, cur);
-  if (key === 'games_played' && cur >= 100) unlock('centurion');
+  if (key === 'games_played') {
+    if (cur >= 100) unlock('centurion');
+    if (cur >= 200) unlock('games_200');
+  }
+  if (key === 'drilled_terms' && cur >= 50) unlock('drilled_50');
   return cur;
 }
 function getStat(key) { return parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10); }
@@ -1769,10 +2531,15 @@ function recordTermResult(termStr, gotCorrect) {
   const all = getTermStats();
   const s = all[termStr] || { correct: 0, wrong: 0, streak: 0 };
   const wasMastered = s.streak >= MASTERY_TARGET;
+  const wasMissed = s && s.wrong > 0 && (s.streak || 0) < MASTERY_TARGET;
   if (gotCorrect) { s.correct++; s.streak++; } else { s.wrong++; s.streak = 0; }
   all[termStr] = s;
   saveTermStats(all);
   bumpDailyCount();
+  // When a previously-missed term hits mastery, count it toward the drill achievement
+  if (gotCorrect && wasMissed && s.streak >= MASTERY_TARGET) {
+    bumpStat('drilled_terms');
+  }
   // Mastery unlock moment
   if (!wasMastered && s.streak >= MASTERY_TARGET) {
     bumpStat('terms_mastered');
@@ -1837,6 +2604,7 @@ function bumpDailyCount() {
     unlock('daily_done');
     if (s.streak >= 3) unlock('streak_days_3');
     if (s.streak >= 5) unlock('streak_days_5');
+    if (s.streak >= 7) unlock('study_streak_7');
   }
   saveDailyState(s);
   renderDailyBadge();
@@ -1883,6 +2651,7 @@ function startStudyTimer() {
     // Achievement milestones (today)
     if (s.todaySecs === 30 * 60) unlock('study_30min');
     if (s.todaySecs === 60 * 60) unlock('study_60min');
+    if (s.todaySecs === 120 * 60) unlock('study_2hr');
   }, 1000);
 }
 function formatTime(secs) {
@@ -2469,6 +3238,8 @@ function answer(correct, btn, ev) {
     burst(ev.clientX, ev.clientY, '#00ff88');
     if (qStreak >= 5) unlock('streak_5');
     if (qStreak >= 10) unlock('streak_10');
+    if (qStreak >= 15) unlock('streak_15');
+    if (qStreak >= 25) unlock('streak_25');
     triggerCombo(qStreak);
   } else {
     btn.classList.add('wrong');
@@ -2684,6 +3455,8 @@ function typeCorrectAnswer() {
   if (typeStreak >= 5) unlock('typist');
   if (typeStreak >= 5) unlock('streak_5');
   if (typeStreak >= 10) unlock('streak_10');
+  if (typeStreak >= 15) unlock('streak_15');
+  if (typeStreak >= 25) unlock('streak_25');
   triggerCombo(typeStreak);
   $('tScore').textContent = typeScore;
   setTimeout(() => { typeIdx++; nextType(); }, 900);
@@ -2802,6 +3575,8 @@ function sAnswer(correct, btn, ev) {
     burst(ev.clientX, ev.clientY, '#00ff88');
     if (sStreak >= 5) unlock('streak_5');
     if (sStreak >= 10) unlock('streak_10');
+    if (sStreak >= 15) unlock('streak_15');
+    if (sStreak >= 25) unlock('streak_25');
     triggerCombo(sStreak);
     setTimeout(nextSurvival, 700);
   } else {
@@ -2878,6 +3653,8 @@ function showNextUp(modeJustFinished) {
     else if (rec.mode === 'flash') startFlash();
     else if (rec.mode === 'type') startType();
     else if (rec.mode === 'range') startRange();
+    else if (rec.mode === 'blitz') startBlitz();
+    else if (rec.mode === 'memory') startMemory();
   };
   nu.hidden = false;
 }
@@ -2955,6 +3732,13 @@ startStudyTimer();
 renderFinalsCard();
 renderQuickPlay();
 renderBossCard();
+renderHeroGreet();
+checkTimeOfDayAchievements();
+// First-visit welcome flow
+if (!localStorage.getItem('cram_username')) {
+  // Defer until next tick so the home screen paints first
+  setTimeout(openWelcome, 200);
+}
 // Mark current track as heard on boot (for audiophile)
 (() => {
   const heard = JSON.parse(localStorage.getItem('cram_tracks_heard') || '[]');
@@ -2970,6 +3754,8 @@ setInterval(() => {
     renderQuickPlay();
     renderBossCard();
   }
+  // Time-of-day achievements re-check (catches users who play across the boundary)
+  checkTimeOfDayAchievements();
 }, 60_000);
 </script>
 </body>
