@@ -3,27 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>CORBIN'S CRAM ARCADE</title>
+<title>Corbin's Cram Arcade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
   /* =========================================================
-     CRAM ARCADE — v4
+     CORBIN'S CRAM ARCADE — v6
      EDIT TERMS: search for "EDIT TERMS HERE" near bottom of file
      ========================================================= */
   :root {
+    /* DEFAULT theme — neon lime/pink/cyan on deep purple */
     --bg: #0a0014; --bg-2: #15022a; --bg-3: #1d0833; --bg-4: #2a0f47;
     --ink: #f5f0ff; --ink-dim: #8b7da8;
     --lime: #dfff00; --pink: #ff2d95; --cyan: #00e5ff;
     --orange: #ff9500; --green: #00ff88; --red: #ff3366;
     --grid: rgba(223, 255, 0, 0.06);
   }
+  /* INFERNO — red / orange / yellow on near-black */
+  :root[data-theme="inferno"] {
+    --bg: #0a0000; --bg-2: #1a0500; --bg-3: #260a00; --bg-4: #380f00;
+    --ink: #fff5e6; --ink-dim: #a08070;
+    --lime: #ffd700; --pink: #ff5722; --cyan: #ff9500;
+    --orange: #ff6b00; --green: #ffd700; --red: #ff1744;
+    --grid: rgba(255, 107, 0, 0.07);
+  }
+  /* OCEAN — cyan / teal / blue on deep navy */
+  :root[data-theme="ocean"] {
+    --bg: #00121f; --bg-2: #001a2e; --bg-3: #002340; --bg-4: #003056;
+    --ink: #e0f7ff; --ink-dim: #7090a8;
+    --lime: #00e5ff; --pink: #00ffd5; --cyan: #4dd0e1;
+    --orange: #29b6f6; --green: #00ff88; --red: #ff5252;
+    --grid: rgba(0, 229, 255, 0.06);
+  }
+  /* MATRIX — green-on-black hacker terminal */
+  :root[data-theme="matrix"] {
+    --bg: #000600; --bg-2: #001200; --bg-3: #001a00; --bg-4: #002400;
+    --ink: #d0ffd0; --ink-dim: #4a8a4a;
+    --lime: #00ff41; --pink: #6eff6e; --cyan: #00ff88;
+    --orange: #aaff00; --green: #00ff41; --red: #ff4444;
+    --grid: rgba(0, 255, 65, 0.07);
+  }
+  /* SAKURA — pink / magenta / lavender */
+  :root[data-theme="sakura"] {
+    --bg: #14001a; --bg-2: #220026; --bg-3: #2e0036; --bg-4: #3d0044;
+    --ink: #fde6ff; --ink-dim: #a880b0;
+    --lime: #ff7eb6; --pink: #ff2d95; --cyan: #c77dff;
+    --orange: #ff85ff; --green: #b388ff; --red: #ff3d7f;
+    --grid: rgba(255, 45, 149, 0.07);
+  }
+  /* MONO — high-contrast white-on-black study mode */
+  :root[data-theme="mono"] {
+    --bg: #000000; --bg-2: #111111; --bg-3: #1a1a1a; --bg-4: #262626;
+    --ink: #f5f5f5; --ink-dim: #888888;
+    --lime: #ffffff; --pink: #cccccc; --cyan: #dddddd;
+    --orange: #eeeeee; --green: #ffffff; --red: #ff5555;
+    --grid: rgba(255, 255, 255, 0.04);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
   html, body {
     background: var(--bg); color: var(--ink);
     font-family: 'Outfit', sans-serif; min-height: 100vh; overflow-x: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
   }
   body {
     background-image:
@@ -308,11 +350,29 @@
   }
   .snackbar.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* ---------- GAMES GROUPED ---------- */
+  .games-group { margin-top: 22px; }
+  .games-group-label {
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    color: var(--ink-dim); letter-spacing: 1.5px;
+    margin-bottom: 10px; padding-left: 2px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .games-group-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--ink-dim), transparent);
+    opacity: 0.4;
+  }
+  .games-group.warmup   .games-group-label { color: var(--lime); }
+  .games-group.test     .games-group-label { color: var(--cyan); }
+  .games-group.challenge .games-group-label { color: var(--orange); }
+  .games-group.boss     .games-group-label { color: var(--pink); }
+
   /* ---------- GAMES GRID ---------- */
   .games {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px; margin-top: 12px;
+    gap: 12px; margin-top: 6px;
   }
   .game-card {
     background: var(--bg-2); border: 2px solid rgba(255, 255, 255, 0.08);
@@ -577,6 +637,117 @@
     position: fixed; inset: 0; pointer-events: none; z-index: 1000;
   }
 
+  /* ---------- TARGET RANGE ---------- */
+  .range-stage {
+    position: relative;
+    min-height: 380px;
+    height: clamp(380px, 60vh, 520px);
+    margin: 14px 0 18px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,45,149,0.06), transparent 70%),
+      var(--bg-2);
+    border: 2px solid var(--orange);
+    overflow: hidden;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+  }
+  .range-stage.shake { animation: shake-small 0.35s ease; }
+  .range-stage.flash-red { animation: range-flash-red 0.25s ease; }
+  .range-stage.flash-green { animation: range-flash-green 0.25s ease; }
+  @keyframes range-flash-red {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,51,102,0); }
+    50%     { box-shadow: 0 0 0 6px rgba(255,51,102,0.45) inset; }
+  }
+  @keyframes range-flash-green {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0); }
+    50%     { box-shadow: 0 0 0 6px rgba(0,255,136,0.45) inset; }
+  }
+  .range-target {
+    position: absolute; left: 0; top: 0;
+    background: var(--bg-3); border: 2px solid var(--orange);
+    color: var(--ink);
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(11px, 1.6vw, 13px); font-weight: 700;
+    box-shadow: 0 0 12px rgba(255,149,0,0.35);
+    cursor: crosshair; transition: transform 0.12s, opacity 0.2s, box-shadow 0.2s;
+    max-width: 220px;
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .range-target:hover { box-shadow: 0 0 20px rgba(255,149,0,0.7); transform: scale(1.04); }
+  .range-target.hit {
+    background: var(--green); color: var(--bg);
+    border-color: var(--green);
+    box-shadow: 0 0 24px var(--green);
+    animation: range-pop 0.4s ease forwards;
+    pointer-events: none;
+  }
+  .range-target.miss-flash {
+    background: var(--red); color: var(--bg);
+    border-color: var(--red);
+    animation: shake 0.3s ease;
+  }
+  @keyframes range-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(0); opacity: 0; }
+  }
+  .range-prompt {
+    background: var(--bg-2); border-left: 6px solid var(--orange);
+    padding: 16px 18px; margin-bottom: 12px;
+    font-size: clamp(14px, 2.2vw, 18px); line-height: 1.4; font-weight: 600;
+  }
+  .range-prompt .label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--orange); margin-bottom: 8px;
+  }
+  .range-hud {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-dim); flex-wrap: wrap; gap: 8px;
+  }
+  .range-hud .ammo { color: var(--orange); font-weight: 700; }
+  .range-hud .lives { color: var(--red); font-size: 16px; letter-spacing: 2px; }
+  .range-hud .streak { color: var(--orange); font-weight: 700; }
+  .range-crosshair {
+    position: absolute; width: 36px; height: 36px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--orange);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255,149,0,0.6);
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+  .range-stage:hover .range-crosshair { opacity: 0.85; }
+  .range-crosshair::before, .range-crosshair::after {
+    content: ''; position: absolute; background: var(--orange);
+  }
+  .range-crosshair::before {
+    left: 50%; top: -8px; width: 2px; height: 52px; transform: translateX(-50%);
+  }
+  .range-crosshair::after {
+    top: 50%; left: -8px; height: 2px; width: 52px; transform: translateY(-50%);
+  }
+  .range-muzzle {
+    position: absolute; width: 50px; height: 50px;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.4);
+    background: radial-gradient(circle, var(--lime) 0%, var(--orange) 40%, transparent 70%);
+    opacity: 0;
+    z-index: 11;
+  }
+  .range-muzzle.fire { animation: muzzle-flash 0.22s ease-out; }
+  @keyframes muzzle-flash {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+  }
+
   /* ---------- MODAL / SETTINGS ---------- */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
@@ -635,6 +806,54 @@
     font-weight: 700; cursor: pointer; transition: all 0.15s;
   }
   .toggle-btn.on { background: var(--lime); color: var(--bg); border-color: var(--lime); }
+
+  /* settings subsection labels */
+  .modal-section-label {
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    color: var(--cyan); letter-spacing: 1px;
+    margin: 8px 0 12px; padding-top: 4px;
+  }
+  .modal-section-label:first-of-type { margin-top: 0; }
+
+  /* theme picker */
+  .theme-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .theme-swatch {
+    cursor: pointer; padding: 10px 6px;
+    background: var(--bg-3); border: 2px solid rgba(255,255,255,0.1);
+    text-align: center; transition: all 0.15s;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink); font-weight: 700;
+  }
+  .theme-swatch:hover { border-color: var(--ink); transform: translateY(-1px); }
+  .theme-swatch.active {
+    border-color: var(--lime);
+    box-shadow: 0 0 0 1px var(--lime) inset;
+  }
+  .theme-swatch .dots {
+    display: flex; gap: 4px; justify-content: center; margin-bottom: 6px;
+  }
+  .theme-swatch .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* track picker */
+  .track-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .track-btn {
+    background: var(--bg-3); border: 2px solid var(--ink-dim);
+    color: var(--ink-dim); padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 700; cursor: pointer; transition: all 0.15s;
+    flex: 1; min-width: 90px;
+  }
+  .track-btn:hover { color: var(--ink); border-color: var(--ink); }
+  .track-btn.active {
+    background: var(--cyan); color: var(--bg); border-color: var(--cyan);
+  }
 
   /* ---------- ACHIEVEMENTS ---------- */
   .achievement-grid {
@@ -708,7 +927,7 @@
 
 <div class="wrap">
   <div class="topbar">
-    <div class="logo" onclick="goHome()">★ CRAM ARCADE</div>
+    <div class="logo" onclick="goHome()">★ CORBIN'S CRAM ARCADE</div>
     <div class="topbar-right">
       <div class="study-timer" id="studyTimer" title="Active study time today"></div>
       <div class="daily-badge" id="dailyBadge" title="Daily goal"></div>
@@ -735,35 +954,58 @@
       <div class="topic-bar-label">// CHOOSE A TOPIC</div>
       <div class="topic-pills" id="topicPills" role="tablist" aria-label="Filter terms by topic"></div>
     </div>
-    <div class="games">
-      <div class="game-card" style="--accent: var(--lime);" onclick="startFlash()" role="button" tabindex="0" aria-label="Mode 1: Flash Cards">
-        <div class="num">// MODE 01</div><h3>FLASH CARDS</h3>
-        <p>Flip through every term. Warmup mode.</p>
+    <div class="games-group warmup">
+      <div class="games-group-label">// WARMUP</div>
+      <div class="games">
+        <div class="game-card" style="--accent: var(--lime);" onclick="startFlash()" role="button" tabindex="0" aria-label="Mode 1: Flash Cards">
+          <div class="num">// MODE 01</div><h3>FLASH CARDS</h3>
+          <p>Flip through every term. Warmup mode.</p>
+        </div>
       </div>
-      <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" role="button" tabindex="0" aria-label="Mode 2: Speed Quiz">
-        <div class="num">// MODE 02</div><h3>SPEED QUIZ</h3>
-        <p>10 questions, 15 sec each. Build a streak.</p>
-        <div class="hi" id="hiQuiz">HI-SCORE: 0</div>
+    </div>
+    <div class="games-group test">
+      <div class="games-group-label">// TEST YOURSELF</div>
+      <div class="games">
+        <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" role="button" tabindex="0" aria-label="Mode 2: Speed Quiz">
+          <div class="num">// MODE 02</div><h3>SPEED QUIZ</h3>
+          <p>10 questions, 15 sec each. Build a streak.</p>
+          <div class="hi" id="hiQuiz">HI-SCORE: 0</div>
+        </div>
+        <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" role="button" tabindex="0" aria-label="Mode 3: Match Up">
+          <div class="num">// MODE 03</div><h3>MATCH UP</h3>
+          <p>Pair terms to definitions. Beat the clock.</p>
+          <div class="hi" id="hiMatch">BEST TIME: --</div>
+        </div>
+        <div class="game-card" style="--accent: var(--orange);" onclick="startType()" role="button" tabindex="0" aria-label="Mode 4: Type It">
+          <div class="num">// MODE 04</div><h3>TYPE IT</h3>
+          <p>Read the def. Type the term. True recall.</p>
+          <div class="hi" id="hiType">HI-SCORE: 0</div>
+        </div>
       </div>
-      <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" role="button" tabindex="0" aria-label="Mode 3: Match Up">
-        <div class="num">// MODE 03</div><h3>MATCH UP</h3>
-        <p>Pair terms to definitions. Beat the clock.</p>
-        <div class="hi" id="hiMatch">BEST TIME: --</div>
+    </div>
+    <div class="games-group challenge">
+      <div class="games-group-label">// CHALLENGE</div>
+      <div class="games">
+        <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" role="button" tabindex="0" aria-label="Mode 5: Survival">
+          <div class="num">// MODE 05</div><h3>SURVIVAL</h3>
+          <p>3 lives. Endless rounds. How long can you last?</p>
+          <div class="hi" id="hiSurv">RECORD: 0</div>
+        </div>
+        <div class="game-card" style="--accent: var(--orange);" onclick="startRange()" role="button" tabindex="0" aria-label="Mode 6: Target Range">
+          <div class="num">// MODE 06</div><h3>TARGET RANGE 🎯</h3>
+          <p>Shoot the right term. Don't miss. 10 rounds.</p>
+          <div class="hi" id="hiRange">HI-SCORE: 0</div>
+        </div>
       </div>
-      <div class="game-card" style="--accent: var(--orange);" onclick="startType()" role="button" tabindex="0" aria-label="Mode 4: Type It">
-        <div class="num">// MODE 04</div><h3>TYPE IT</h3>
-        <p>Read the def. Type the term. True recall.</p>
-        <div class="hi" id="hiType">HI-SCORE: 0</div>
-      </div>
-      <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" role="button" tabindex="0" aria-label="Mode 5: Survival">
-        <div class="num">// MODE 05</div><h3>SURVIVAL</h3>
-        <p>3 lives. Endless rounds. How long can you last?</p>
-        <div class="hi" id="hiSurv">RECORD: 0</div>
-      </div>
-      <div class="game-card boss-card locked" id="bossCard" style="--accent: var(--pink);" onclick="startBoss()" role="button" tabindex="0" aria-label="Boss mode">
-        <div class="num">// MODE 06 · BOSS</div><h3 id="bossTitle">🔒 FINAL BOSS</h3>
-        <p id="bossDesc">Master 25 terms to unlock.</p>
-        <div class="hi" id="hiBoss">HI-SCORE: 0</div>
+    </div>
+    <div class="games-group boss">
+      <div class="games-group-label">// BOSS</div>
+      <div class="games">
+        <div class="game-card boss-card locked" id="bossCard" style="--accent: var(--pink);" onclick="startBoss()" role="button" tabindex="0" aria-label="Boss mode">
+          <div class="num">// MODE 07 · BOSS</div><h3 id="bossTitle">🔒 FINAL BOSS</h3>
+          <p id="bossDesc">Master 25 terms to unlock.</p>
+          <div class="hi" id="hiBoss">HI-SCORE: 0</div>
+        </div>
       </div>
     </div>
     <div class="util-row">
@@ -891,6 +1133,28 @@
     </div>
   </div>
 
+  <!-- TARGET RANGE -->
+  <div id="range" class="screen">
+    <div class="screen-header">
+      <div class="screen-title">// TARGET RANGE 🎯</div>
+      <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <div class="range-hud">
+      <div>ROUND <span id="rRound">1</span>/<span id="rTotal">10</span></div>
+      <div>SCORE: <span id="rScore" class="ammo">0</span></div>
+      <div>STREAK: <span id="rStreak" class="streak">0🔥</span></div>
+      <div>LIVES: <span id="rLives" class="lives">❤❤❤</span></div>
+    </div>
+    <div class="range-prompt">
+      <span class="label">SHOOT THE TERM THAT MATCHES</span>
+      <span id="rPrompt">—</span>
+    </div>
+    <div class="range-stage" id="rStage">
+      <div class="range-crosshair" id="rCrosshair"></div>
+      <div class="range-muzzle" id="rMuzzle"></div>
+    </div>
+  </div>
+
   <!-- RESULT -->
   <div id="result" class="screen">
     <div class="result">
@@ -920,7 +1184,7 @@
     <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 
-  <div class="footer">BUILT FOR CORBIN · v5 · 6 MODES · STREAKS · DRILLS · BOSS</div>
+  <div class="footer">BUILT FOR CORBIN · v6 · 7 MODES · THEMES · TARGET RANGE · BOSS</div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -929,13 +1193,23 @@
     <button class="modal-close" onclick="closeSettings()">×</button>
     <div class="modal-title">// SETTINGS</div>
 
+    <div class="modal-section-label">// APPEARANCE</div>
+    <div class="setting-row">
+      <div class="setting-label"><span>THEME</span><span class="value" id="themeNameVal">DEFAULT</span></div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+
+    <div class="modal-section-label">// AUDIO</div>
     <div class="setting-row">
       <div class="toggle-row">
         <span class="setting-label" style="margin: 0; font-size: 13px;">SOUND</span>
         <button class="toggle-btn on" id="soundToggle" onclick="toggleSound()">ON</button>
       </div>
     </div>
-
+    <div class="setting-row">
+      <div class="setting-label"><span>SOUNDTRACK</span><span class="value" id="trackNameVal">ARCADE</span></div>
+      <div class="track-row" id="trackRow"></div>
+    </div>
     <div class="setting-row">
       <div class="setting-label">
         <span>MUSIC VOLUME</span>
@@ -943,7 +1217,6 @@
       </div>
       <input type="range" class="slider" id="musicVol" min="0" max="100" value="50">
     </div>
-
     <div class="setting-row">
       <div class="setting-label">
         <span>SFX VOLUME</span>
@@ -952,6 +1225,7 @@
       <input type="range" class="slider" id="sfxVol" min="0" max="100" value="70">
     </div>
 
+    <div class="modal-section-label">// DATA</div>
     <div class="setting-row">
       <div class="toggle-row">
         <span class="setting-label" style="margin: 0; font-size: 13px;">RESET ALL DATA</span>
@@ -1125,6 +1399,14 @@ const ACHIEVEMENTS = [
   { id: 'boss_started', icon: '👑', name: 'Boss Challenger', desc: 'Take on the FINAL BOSS' },
   { id: 'boss_perfect', icon: '🐉', name: 'Boss Slayer', desc: 'Perfect score in FINAL BOSS' },
   { id: 'boss_legend', icon: '🌟', name: 'Legend', desc: 'Score 400+ in FINAL BOSS' },
+  { id: 'range_started', icon: '🎯', name: 'Trigger Finger', desc: 'Try Target Range' },
+  { id: 'range_sharp', icon: '🎖️', name: 'Sharpshooter', desc: 'Hit 5 targets in a row' },
+  { id: 'range_perfect', icon: '💥', name: 'Bullseye', desc: 'Perfect round in Target Range (10/10 + no misses)' },
+  { id: 'theme_swap', icon: '🎨', name: 'Repainted', desc: 'Change your theme' },
+  { id: 'all_themes', icon: '🌈', name: 'Style Icon', desc: 'Try every theme' },
+  { id: 'audiophile', icon: '🎧', name: 'Audiophile', desc: 'Listen to every track' },
+  { id: 'centurion', icon: '💯', name: 'Centurion', desc: 'Play 100 games' },
+  { id: 'topic_dominator', icon: '🏆', name: 'Topic Dominator', desc: 'Master every topic on the board' },
 ];
 /* ========================================================= */
 
@@ -1133,12 +1415,14 @@ const Sound = {
   ctx: null, enabled: true,
   musicVol: 0.5, sfxVol: 0.7,
   musicPlaying: false, musicInterval: null,
+  trackId: 'arcade',
   init() {
     if (this.ctx) return;
     try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
     this.enabled = localStorage.getItem('cram_audio') !== '0';
     this.musicVol = parseFloat(localStorage.getItem('cram_mvol') || '0.5');
     this.sfxVol = parseFloat(localStorage.getItem('cram_svol') || '0.7');
+    this.trackId = localStorage.getItem('cram_track') || 'arcade';
     this.updateUI();
   },
   resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
@@ -1193,37 +1477,113 @@ const Sound = {
       setTimeout(() => this.beep(base * Math.pow(ratio, i), 0.08, 'square', 0.08), i * 55);
     }
   },
+  // Target Range SFX
+  shoot() {
+    if (!this.enabled || !this.ctx) return;
+    // noise burst + descending pitch = laser/blaster
+    const dur = 0.12;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(1200, this.ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(180, this.ctx.currentTime + dur);
+    g.gain.setValueAtTime(0.09 * this.sfxVol, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+    o.connect(g); g.connect(this.ctx.destination);
+    o.start(); o.stop(this.ctx.currentTime + dur);
+  },
+  hitTarget() {
+    this.beep(880, 0.05, 'square', 0.08);
+    setTimeout(() => this.beep(1320, 0.08, 'square', 0.08), 50);
+    setTimeout(() => this.beep(1760, 0.12, 'square', 0.08), 110);
+  },
+  missTarget() {
+    this.beep(180, 0.18, 'sawtooth', 0.08);
+    setTimeout(() => this.beep(120, 0.22, 'sawtooth', 0.08), 100);
+  },
+  // ---------- TRACKS ----------
+  // ARCADE — the original driving chiptune
+  _tracks: {
+    arcade: {
+      name: 'ARCADE',
+      interval: 320,
+      pattern: [
+        [130.81, 392.00], [130.81, 523.25], [130.81, 659.25], [130.81, 523.25],
+        [196.00, 392.00], [196.00, 587.33], [196.00, 783.99], [196.00, 587.33],
+        [220.00, 440.00], [220.00, 659.25], [220.00, 880.00], [220.00, 659.25],
+        [174.61, 349.23], [174.61, 523.25], [174.61, 698.46], [174.61, 523.25],
+      ],
+      bassType: 'triangle', melType: 'square',
+      bassVol: 0.04, melVol: 0.025, bassDecay: 0.22, melDecay: 0.16,
+    },
+    // WAVES — chill / lofi vibe, slower bpm, soft synth lead
+    waves: {
+      name: 'WAVES',
+      interval: 480,
+      pattern: [
+        [110.00, 329.63], [110.00, 392.00], [110.00, 440.00], [110.00, 392.00],
+        [146.83, 349.23], [146.83, 440.00], [146.83, 523.25], [146.83, 440.00],
+        [164.81, 329.63], [164.81, 392.00], [164.81, 493.88], [164.81, 392.00],
+        [123.47, 311.13], [123.47, 369.99], [123.47, 415.30], [123.47, 369.99],
+      ],
+      bassType: 'sine', melType: 'triangle',
+      bassVol: 0.05, melVol: 0.03, bassDecay: 0.40, melDecay: 0.28,
+    },
+    // CHASE — fast, frantic 8-bit chase music for high-pressure modes
+    chase: {
+      name: 'CHASE',
+      interval: 200,
+      pattern: [
+        [82.41, 329.63], [82.41, 415.30], [82.41, 493.88], [82.41, 587.33],
+        [82.41, 659.25], [82.41, 587.33], [82.41, 493.88], [82.41, 415.30],
+        [98.00, 392.00], [98.00, 493.88], [98.00, 587.33], [98.00, 698.46],
+        [98.00, 783.99], [98.00, 698.46], [98.00, 587.33], [98.00, 493.88],
+      ],
+      bassType: 'square', melType: 'square',
+      bassVol: 0.035, melVol: 0.022, bassDecay: 0.14, melDecay: 0.12,
+    },
+  },
+  getTracks() { return Object.entries(this._tracks).map(([id, t]) => ({ id, name: t.name })); },
   startMusic() {
     if (!this.enabled || !this.ctx || this.musicPlaying) return;
+    const track = this._tracks[this.trackId] || this._tracks.arcade;
     this.musicPlaying = true;
-    const pattern = [
-      [130.81, 392.00], [130.81, 523.25], [130.81, 659.25], [130.81, 523.25],
-      [196.00, 392.00], [196.00, 587.33], [196.00, 783.99], [196.00, 587.33],
-      [220.00, 440.00], [220.00, 659.25], [220.00, 880.00], [220.00, 659.25],
-      [174.61, 349.23], [174.61, 523.25], [174.61, 698.46], [174.61, 523.25],
-    ];
     let beat = 0;
     this.musicInterval = setInterval(() => {
       if (!this.enabled || !this.ctx) return;
-      const [bass, mel] = pattern[beat % pattern.length];
+      const [bass, mel] = track.pattern[beat % track.pattern.length];
       // bass
       const bo = this.ctx.createOscillator(), bg = this.ctx.createGain();
-      bo.type = 'triangle'; bo.frequency.value = bass;
-      bg.gain.setValueAtTime(0.04 * this.musicVol, this.ctx.currentTime);
-      bg.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.22);
+      bo.type = track.bassType; bo.frequency.value = bass;
+      bg.gain.setValueAtTime(track.bassVol * this.musicVol, this.ctx.currentTime);
+      bg.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + track.bassDecay);
       bo.connect(bg); bg.connect(this.ctx.destination);
-      bo.start(); bo.stop(this.ctx.currentTime + 0.22);
+      bo.start(); bo.stop(this.ctx.currentTime + track.bassDecay);
       // melody
       const mo = this.ctx.createOscillator(), mg = this.ctx.createGain();
-      mo.type = 'square'; mo.frequency.value = mel;
-      mg.gain.setValueAtTime(0.025 * this.musicVol, this.ctx.currentTime);
-      mg.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.16);
+      mo.type = track.melType; mo.frequency.value = mel;
+      mg.gain.setValueAtTime(track.melVol * this.musicVol, this.ctx.currentTime);
+      mg.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + track.melDecay);
       mo.connect(mg); mg.connect(this.ctx.destination);
-      mo.start(); mo.stop(this.ctx.currentTime + 0.16);
+      mo.start(); mo.stop(this.ctx.currentTime + track.melDecay);
       beat++;
-    }, 320);
+    }, track.interval);
   },
   stopMusic() { clearInterval(this.musicInterval); this.musicPlaying = false; },
+  setTrack(id) {
+    if (!this._tracks[id]) return;
+    this.trackId = id;
+    localStorage.setItem('cram_track', id);
+    // mark this track as heard for the audiophile achievement
+    const heard = JSON.parse(localStorage.getItem('cram_tracks_heard') || '[]');
+    if (!heard.includes(id)) {
+      heard.push(id);
+      localStorage.setItem('cram_tracks_heard', JSON.stringify(heard));
+      if (heard.length >= Object.keys(this._tracks).length) unlock('audiophile');
+    }
+    if (this.musicPlaying) { this.stopMusic(); this.startMusic(); }
+    this.updateUI();
+  },
   toggle() {
     this.enabled = !this.enabled;
     localStorage.setItem('cram_audio', this.enabled ? '1' : '0');
@@ -1252,6 +1612,12 @@ const Sound = {
     const sv = document.getElementById('sfxVol'), svv = document.getElementById('sfxVolVal');
     if (sv) sv.value = Math.round(this.sfxVol * 100);
     if (svv) svv.textContent = Math.round(this.sfxVol * 100) + '%';
+    const tn = document.getElementById('trackNameVal');
+    if (tn && this._tracks[this.trackId]) tn.textContent = this._tracks[this.trackId].name;
+    const row = document.getElementById('trackRow');
+    if (row) {
+      row.querySelectorAll('.track-btn').forEach(b => b.classList.toggle('active', b.dataset.track === this.trackId));
+    }
   }
 };
 function toggleSound() { Sound.toggle(); }
@@ -1313,6 +1679,7 @@ function showScreen(id) {
 function goHome() {
   stopAllTimers();
   exitBossMode();
+  exitRange();
   hideNextUp();
   Sound.click();
   showScreen('home');
@@ -1322,6 +1689,10 @@ function goHome() {
   renderFinalsCard();
   renderQuickPlay();
   renderBossCard();
+}
+function exitRange() {
+  rActive = false;
+  if (rTargetEls) { rTargetEls.forEach(el => el.remove()); rTargetEls = []; }
 }
 
 // ---------- HI-SCORES ----------
@@ -1339,6 +1710,7 @@ function renderStats() {
   $('hiQuiz').textContent = `HI-SCORE: ${getHi('quiz')}`;
   $('hiType').textContent = `HI-SCORE: ${getHi('type')}`;
   $('hiSurv').textContent = `RECORD: ${getHi('surv')}`;
+  $('hiRange').textContent = `HI-SCORE: ${getHi('range')}`;
   const matchBest = getHi('match');
   $('hiMatch').textContent = matchBest > 0 ? `BEST TIME: ${matchBest}s` : 'BEST TIME: --';
 }
@@ -1384,6 +1756,7 @@ function drainToastQueue() {
 function bumpStat(key, by = 1) {
   const cur = parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10) + by;
   localStorage.setItem('cram_stat_' + key, cur);
+  if (key === 'games_played' && cur >= 100) unlock('centurion');
   return cur;
 }
 function getStat(key) { return parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10); }
@@ -1414,6 +1787,13 @@ function recordTermResult(termStr, gotCorrect) {
       const set = TERMS.filter(t => (t.topic || 'Misc') === topic);
       if (set.every(t => isTermMastered(t.term))) unlock('topic_cleared');
     }
+    // topic dominator — every topic 100% mastered
+    const allTopics = [...new Set(TERMS.map(t => t.topic || 'Misc'))];
+    const dominated = allTopics.every(tp => {
+      const set = TERMS.filter(t => (t.topic || 'Misc') === tp);
+      return set.length > 0 && set.every(t => isTermMastered(t.term));
+    });
+    if (dominated) unlock('topic_dominator');
   }
 }
 function isTermMastered(termStr) { return (getTermStats()[termStr]?.streak || 0) >= MASTERY_TARGET; }
@@ -1677,6 +2057,216 @@ function exitBossMode() {
   bossMode = false;
   document.body.classList.remove('boss-mode');
   $('quiz').querySelector('.screen-title').textContent = '// SPEED QUIZ';
+}
+
+// ---------- THEMES ----------
+const THEMES = [
+  { id: 'default', name: 'DEFAULT', dots: ['#dfff00', '#ff2d95', '#00e5ff'] },
+  { id: 'inferno', name: 'INFERNO', dots: ['#ffd700', '#ff5722', '#ff9500'] },
+  { id: 'ocean',   name: 'OCEAN',   dots: ['#00e5ff', '#00ffd5', '#29b6f6'] },
+  { id: 'matrix',  name: 'MATRIX',  dots: ['#00ff41', '#6eff6e', '#aaff00'] },
+  { id: 'sakura',  name: 'SAKURA',  dots: ['#ff7eb6', '#ff2d95', '#c77dff'] },
+  { id: 'mono',    name: 'MONO',    dots: ['#ffffff', '#cccccc', '#888888'] },
+];
+function getTheme() { return localStorage.getItem('cram_theme') || 'default'; }
+function applyTheme(id) {
+  const valid = THEMES.find(t => t.id === id) ? id : 'default';
+  if (valid === 'default') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', valid);
+  localStorage.setItem('cram_theme', valid);
+  // track tried themes for the all_themes achievement
+  const tried = JSON.parse(localStorage.getItem('cram_themes_tried') || '[]');
+  if (!tried.includes(valid)) {
+    tried.push(valid);
+    localStorage.setItem('cram_themes_tried', JSON.stringify(tried));
+    if (tried.length >= THEMES.length) unlock('all_themes');
+  }
+  // update active state in picker
+  document.querySelectorAll('.theme-swatch').forEach(el => el.classList.toggle('active', el.dataset.theme === valid));
+  const nameEl = $('themeNameVal');
+  const themeObj = THEMES.find(t => t.id === valid);
+  if (nameEl && themeObj) nameEl.textContent = themeObj.name;
+}
+function renderThemeGrid() {
+  const grid = $('themeGrid');
+  if (!grid) return;
+  const active = getTheme();
+  grid.innerHTML = '';
+  THEMES.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'theme-swatch' + (t.id === active ? ' active' : '');
+    el.dataset.theme = t.id;
+    el.innerHTML = `
+      <div class="dots">${t.dots.map(c => `<span class="dot" style="background:${c}"></span>`).join('')}</div>
+      <div>${t.name}</div>`;
+    el.onclick = () => {
+      Sound.click();
+      applyTheme(t.id);
+      unlock('theme_swap');
+    };
+    grid.appendChild(el);
+  });
+}
+function renderTrackRow() {
+  const row = $('trackRow');
+  if (!row) return;
+  row.innerHTML = '';
+  Sound.getTracks().forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'track-btn' + (t.id === Sound.trackId ? ' active' : '');
+    b.dataset.track = t.id;
+    b.textContent = t.name;
+    b.onclick = () => { Sound.click(); Sound.setTrack(t.id); };
+    row.appendChild(b);
+  });
+}
+
+// ---------- TARGET RANGE 🎯 ----------
+const RANGE_TOTAL = 10;
+const RANGE_OPTIONS = 4;
+let rTerms = [], rOrder = [], rIdx = 0, rScore = 0, rStreak = 0, rBest = 0, rLives = 3, rHits = 0, rMisses = 0;
+let rTargetEls = [], rActive = false, rRoundTimer = null;
+function startRange() {
+  ensureAudio(); markGameTried('range');
+  rTerms = getActiveTerms();
+  if (rTerms.length < RANGE_OPTIONS) { showSnack(`Need at least ${RANGE_OPTIONS} terms in this filter for Target Range`); return; }
+  rOrder = shuffle([...Array(rTerms.length).keys()]).slice(0, Math.min(RANGE_TOTAL, rTerms.length));
+  rIdx = 0; rScore = 0; rStreak = 0; rBest = 0; rLives = 3; rHits = 0; rMisses = 0;
+  rActive = true;
+  $('rTotal').textContent = rOrder.length;
+  updateRangeHud();
+  setupRangeCrosshair();
+  Sound.click(); showScreen('range');
+  unlock('range_started');
+  nextRangeRound();
+}
+function updateRangeHud() {
+  $('rRound').textContent = Math.min(rIdx + 1, rOrder.length);
+  $('rScore').textContent = rScore;
+  $('rStreak').textContent = rStreak + '🔥';
+  $('rLives').textContent = '❤'.repeat(Math.max(0, rLives)) || '—';
+}
+function setupRangeCrosshair() {
+  const stage = $('rStage');
+  const cross = $('rCrosshair');
+  const onMove = (x, y) => {
+    const rect = stage.getBoundingClientRect();
+    cross.style.left = (x - rect.left) + 'px';
+    cross.style.top = (y - rect.top) + 'px';
+  };
+  stage.onmousemove = e => onMove(e.clientX, e.clientY);
+  stage.ontouchmove = e => { if (e.touches[0]) { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); } };
+  stage.onclick = e => {
+    if (!rActive) return;
+    // only fire if click hit empty stage (target clicks are handled by listener on the target)
+    if (e.target === stage || e.target === cross) {
+      rangeFire(e.clientX, e.clientY);
+      // empty shot — no penalty, just sound
+    }
+  };
+}
+function rangeFire(clientX, clientY) {
+  const stage = $('rStage');
+  const muzzle = $('rMuzzle');
+  const rect = stage.getBoundingClientRect();
+  muzzle.style.left = (clientX - rect.left) + 'px';
+  muzzle.style.top = (clientY - rect.top) + 'px';
+  muzzle.classList.remove('fire'); void muzzle.offsetWidth; muzzle.classList.add('fire');
+  Sound.shoot();
+}
+function nextRangeRound() {
+  if (!rActive) return;
+  if (rIdx >= rOrder.length || rLives <= 0) { endRange(); return; }
+  const correctTerm = rTerms[rOrder[rIdx]];
+  $('rPrompt').textContent = correctTerm.def;
+  updateRangeHud();
+  // pick distractor terms from the same pool, ensuring uniqueness by .term
+  const distractors = shuffle(rTerms.filter(t => t.term !== correctTerm.term)).slice(0, RANGE_OPTIONS - 1);
+  const all = shuffle([correctTerm, ...distractors]);
+  spawnTargets(all, correctTerm.term);
+}
+function spawnTargets(terms, correctTermStr) {
+  const stage = $('rStage');
+  // clear old targets but keep crosshair + muzzle
+  rTargetEls.forEach(el => el.remove());
+  rTargetEls = [];
+  const sw = stage.clientWidth;
+  const sh = stage.clientHeight;
+  // generate non-overlapping positions in a simple grid-jitter
+  const positions = [];
+  const placeAttempts = 60;
+  terms.forEach((t, i) => {
+    let placed = null;
+    for (let a = 0; a < placeAttempts; a++) {
+      const x = 20 + Math.random() * (sw - 240);
+      const y = 20 + Math.random() * (sh - 80);
+      const ok = positions.every(p => Math.hypot(p.x - x, p.y - y) > 130);
+      if (ok) { placed = { x, y }; break; }
+    }
+    if (!placed) placed = { x: 20 + (i % 2) * (sw / 2), y: 20 + Math.floor(i / 2) * (sh / 2 - 20) };
+    positions.push(placed);
+
+    const el = document.createElement('div');
+    el.className = 'range-target';
+    el.textContent = t.term;
+    el.style.left = placed.x + 'px';
+    el.style.top = placed.y + 'px';
+    // gentle drift via CSS transform animation
+    const driftX = (Math.random() - 0.5) * 30;
+    const driftY = (Math.random() - 0.5) * 20;
+    el.animate(
+      [{ transform: `translate(0,0)` }, { transform: `translate(${driftX}px, ${driftY}px)` }],
+      { duration: 1500 + Math.random() * 1500, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' }
+    );
+    el.onclick = ev => { ev.stopPropagation(); rangeFire(ev.clientX, ev.clientY); resolveShot(t.term === correctTermStr, el, ev); };
+    stage.appendChild(el);
+    rTargetEls.push(el);
+  });
+}
+function resolveShot(isCorrect, el, ev) {
+  if (!rActive) return;
+  const stage = $('rStage');
+  const correctTerm = rTerms[rOrder[rIdx]].term;
+  recordTermResult(correctTerm, isCorrect);
+  if (isCorrect) {
+    el.classList.add('hit');
+    rHits++; rScore += 30; rStreak++;
+    rBest = Math.max(rBest, rStreak);
+    Sound.hitTarget();
+    burst(ev.clientX, ev.clientY, '#00ff88');
+    stage.classList.remove('flash-green'); void stage.offsetWidth; stage.classList.add('flash-green');
+    if (rStreak >= 5) unlock('range_sharp');
+    triggerCombo(rStreak);
+    rIdx++;
+    setTimeout(() => nextRangeRound(), 600);
+  } else {
+    rMisses++; rStreak = 0; rLives--;
+    el.classList.add('miss-flash');
+    Sound.missTarget();
+    burst(ev.clientX, ev.clientY, '#ff3366');
+    stage.classList.remove('shake','flash-red'); void stage.offsetWidth;
+    stage.classList.add('shake','flash-red');
+    updateRangeHud();
+    if (rLives <= 0) { setTimeout(() => endRange(), 700); return; }
+    setTimeout(() => el.classList.remove('miss-flash'), 350);
+  }
+}
+function endRange() {
+  rActive = false;
+  rTargetEls.forEach(el => el.remove());
+  rTargetEls = [];
+  const isNewHi = setHi('range', rScore);
+  Sound.victory();
+  bumpStat('games_played');
+  const perfect = rHits === RANGE_TOTAL && rMisses === 0;
+  if (perfect) { unlock('range_perfect'); fireConfetti(120); }
+  if (isNewHi) fireConfetti(60);
+  $('resultTitle').textContent = perfect ? 'BULLSEYE!' : (rLives <= 0 ? 'OUT OF LIVES' : (isNewHi ? 'NEW HI-SCORE!' : (rHits >= 7 ? 'NICE SHOT!' : 'KEEP PRACTICING')));
+  $('resultScore').textContent = rScore;
+  $('resultMsg').textContent = `${rHits}/${RANGE_TOTAL} hits · ${rMisses} miss${rMisses === 1 ? '' : 'es'} · Best streak: ${rBest}🔥`;
+  $('resultAgain').onclick = startRange;
+  showNextUp('range');
+  showScreen('result');
 }
 
 // ---------- CONFETTI ----------
@@ -2287,6 +2877,7 @@ function showNextUp(modeJustFinished) {
     if (rec.mode === 'quiz') startQuiz();
     else if (rec.mode === 'flash') startFlash();
     else if (rec.mode === 'type') startType();
+    else if (rec.mode === 'range') startRange();
   };
   nu.hidden = false;
 }
@@ -2352,7 +2943,10 @@ function renderStatsScreen() {
 }
 
 // ---------- INIT ----------
+applyTheme(getTheme());
 Sound.init();
+renderThemeGrid();
+renderTrackRow();
 renderTopicPills();
 renderStats();
 renderDailyBadge();
@@ -2361,6 +2955,14 @@ startStudyTimer();
 renderFinalsCard();
 renderQuickPlay();
 renderBossCard();
+// Mark current track as heard on boot (for audiophile)
+(() => {
+  const heard = JSON.parse(localStorage.getItem('cram_tracks_heard') || '[]');
+  if (!heard.includes(Sound.trackId)) {
+    heard.push(Sound.trackId);
+    localStorage.setItem('cram_tracks_heard', JSON.stringify(heard));
+  }
+})();
 // Re-render finals/quick-play once a minute (timer keeps things fresh)
 setInterval(() => {
   if ($('home').classList.contains('active')) {
