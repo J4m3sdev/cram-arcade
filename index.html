@@ -198,6 +198,147 @@
     .study-timer { font-size: 10px; padding: 5px 7px; min-width: 56px; }
   }
 
+  /* ---------- COIN CHIP (topbar) ---------- */
+  .coin-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 10px;
+    background: var(--bg-2); border: 2px solid var(--lime);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--lime); white-space: nowrap;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .coin-chip:hover { box-shadow: 0 0 12px rgba(223,255,0,0.4); }
+  .coin-chip.bumped { animation: score-bump 0.4s ease; }
+  @media (max-width: 480px) {
+    .coin-chip { font-size: 10px; padding: 5px 7px; }
+  }
+
+  /* ---------- SHOP MODAL ---------- */
+  .shop-balance {
+    font-family: 'Press Start 2P', monospace; font-size: 14px;
+    color: var(--lime); text-align: center; margin-bottom: 14px;
+    text-shadow: 0 0 12px rgba(223,255,0,0.45);
+  }
+  .shop-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .shop-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-3); border: 2px solid rgba(255,255,255,0.1);
+    padding: 12px 14px; transition: border-color 0.18s;
+  }
+  .shop-item:hover { border-color: var(--cyan); }
+  .shop-item .si-icon {
+    font-size: 28px; flex-shrink: 0;
+    width: 44px; text-align: center;
+    filter: drop-shadow(0 0 8px rgba(223,255,0,0.4));
+  }
+  .shop-item .si-text { flex: 1; font-family: 'JetBrains Mono', monospace; min-width: 0; }
+  .shop-item .si-name {
+    font-size: 12px; font-weight: 700; color: var(--ink);
+    letter-spacing: 0.5px; margin-bottom: 3px;
+  }
+  .shop-item .si-desc { font-size: 11px; color: var(--ink-dim); line-height: 1.3; }
+  .shop-item .si-own { font-size: 10px; color: var(--cyan); margin-top: 3px; }
+  .shop-item .si-buy {
+    background: var(--lime); color: var(--bg);
+    border: 2px solid var(--lime); padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+  .shop-item .si-buy:hover:not(:disabled) {
+    transform: translate(-1px, -1px); box-shadow: 2px 2px 0 var(--pink);
+  }
+  .shop-item .si-buy:disabled {
+    opacity: 0.35; cursor: not-allowed;
+    background: var(--bg-3); color: var(--ink-dim); border-color: var(--ink-dim);
+  }
+  .crate-reveal {
+    font-family: 'Press Start 2P', monospace; font-size: 14px;
+    color: var(--lime); text-align: center;
+    padding: 12px; margin-top: 10px;
+    border: 2px dashed var(--lime);
+    animation: crate-reveal-anim 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes crate-reveal-anim {
+    0%   { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+    60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  /* ---------- DAILY CHALLENGE BANNER ---------- */
+  .daily-challenge {
+    display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, rgba(255,45,149,0.10), rgba(0,229,255,0.10));
+    border: 2px solid var(--pink); color: var(--ink);
+    padding: 12px 16px; margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .daily-challenge.complete {
+    border-color: var(--green);
+    background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(223,255,0,0.08));
+  }
+  .daily-challenge .dc-icon {
+    font-size: 22px; flex-shrink: 0;
+    animation: avatar-bob 2.6s ease-in-out infinite;
+  }
+  .daily-challenge.complete .dc-icon { animation: none; }
+  .daily-challenge .dc-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .daily-challenge .dc-label {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: var(--pink); letter-spacing: 1px;
+  }
+  .daily-challenge.complete .dc-label { color: var(--green); }
+  .daily-challenge .dc-desc { font-size: 12px; color: var(--ink); line-height: 1.3; }
+  .daily-challenge .dc-reward {
+    font-size: 11px; color: var(--lime); letter-spacing: 0.5px; font-weight: 700;
+  }
+
+  /* ---------- BOSS FIGHT HUD ---------- */
+  .boss-hud {
+    margin-bottom: 12px;
+    background: var(--bg-2); border: 2px solid var(--pink);
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .boss-hud .bh-row {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; margin-bottom: 8px;
+  }
+  .boss-hud .bh-name {
+    font-family: 'Press Start 2P', monospace; font-size: 12px;
+    color: var(--pink); letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255,45,149,0.45);
+  }
+  .boss-hud .bh-avatar { font-size: 28px; animation: avatar-bob 2s ease-in-out infinite; }
+  .boss-hud .bh-hp-bar {
+    height: 12px; background: var(--bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden; position: relative;
+  }
+  .boss-hud .bh-hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--orange), var(--pink));
+    transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 0 8px rgba(255,51,102,0.5);
+  }
+  .boss-hud .bh-hp-label {
+    font-size: 10px; color: var(--ink-dim); text-align: right; margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .boss-hud .bh-lives {
+    color: var(--red); font-size: 18px; letter-spacing: 3px;
+  }
+  @keyframes boss-hit {
+    0%   { transform: translateX(0); filter: brightness(1); }
+    20%  { transform: translateX(-6px); filter: brightness(1.6) hue-rotate(20deg); }
+    40%  { transform: translateX(6px); filter: brightness(1.4); }
+    60%  { transform: translateX(-3px); filter: brightness(1.2); }
+    100% { transform: translateX(0); filter: brightness(1); }
+  }
+  .boss-hud.boss-hit { animation: boss-hit 0.5s ease; }
+  body.boss-mode .quiz-prompt { border-left-color: var(--pink); }
+  body.boss-mode .quiz-prompt .label { color: var(--pink); }
+
   /* ---------- DAILY BADGE (topbar) ---------- */
   .daily-badge {
     display: flex; align-items: center; gap: 6px;
@@ -463,6 +604,28 @@
     opacity: 0.55; filter: grayscale(0.4);
   }
   .game-card.boss-card.locked:hover { transform: none; box-shadow: none; }
+  /* v9: generic locked-mode treatment (non-boss). Shows requirement banner. */
+  .game-card.locked-mode {
+    opacity: 0.6; filter: grayscale(0.5);
+    cursor: not-allowed;
+  }
+  .game-card.locked-mode:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.08); }
+  .game-card.locked-mode .lock-req {
+    margin-top: 10px; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--ink-dim); letter-spacing: 0.5px;
+  }
+  .game-card.locked-mode .lock-icon {
+    position: absolute; top: 12px; right: 12px;
+    font-size: 16px; opacity: 0.7;
+  }
+  .game-card.locked-mode h3::before { content: '🔒 '; opacity: 0.85; font-size: 0.9em; }
+  /* Unlock celebration on the freshly-unlocked card */
+  @keyframes unlock-pop {
+    0%   { transform: scale(0.9); box-shadow: 0 0 0 0 var(--lime); }
+    35%  { transform: scale(1.06); box-shadow: 0 0 28px var(--lime); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 var(--lime); }
+  }
+  .game-card.just-unlocked { animation: unlock-pop 0.9s ease; }
   body.boss-mode { background: #15001f; }
   body.boss-mode .timer-fill { background: var(--red); box-shadow: 0 0 12px rgba(255,51,102,0.7); }
   body.boss-mode .screen-title { color: var(--pink); text-shadow: 0 0 10px rgba(255,45,149,0.4); }
@@ -1344,6 +1507,7 @@
   <div class="topbar">
     <div class="logo" onclick="goHome()">★ CORBIN'S CRAM ARCADE</div>
     <div class="topbar-right">
+      <div class="coin-chip" id="coinChip" onclick="openShop()" title="Coins (tap for shop)">💰 0</div>
       <div class="study-timer" id="studyTimer" title="Active study time today"></div>
       <div class="daily-badge" id="dailyBadge" title="Daily goal"></div>
       <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Sound">🔊</button>
@@ -1362,6 +1526,7 @@
       <p>Pick a topic. Pick a game. Lock it in.</p>
     </div>
     <div class="finals-card" id="finalsCard" role="status" aria-live="polite"></div>
+    <div class="daily-challenge" id="dailyChallenge" role="status"></div>
     <button class="quick-play" id="quickPlayBtn" onclick="quickPlay()" aria-label="Quick play — picks the best next thing to study">
       <span class="qp-icon">▶</span>
       <span class="qp-text">
@@ -1439,6 +1604,7 @@
     </div>
     <div class="util-row">
       <button class="util-btn" onclick="openProfile()">👤 PROFILE</button>
+      <button class="util-btn" onclick="openShop()">💰 SHOP</button>
       <button class="util-btn" onclick="openStats()">📊 STATS &amp; BADGES</button>
     </div>
   </div>
@@ -1479,6 +1645,16 @@
     <div class="screen-header">
       <div class="screen-title">// SPEED QUIZ</div>
       <button class="back-btn" onclick="goHome()">← BACK</button>
+    </div>
+    <!-- Boss HUD only appears in boss mode -->
+    <div class="boss-hud" id="bossHud" hidden>
+      <div class="bh-row">
+        <span class="bh-avatar" id="bossAvatar">👑</span>
+        <span class="bh-name" id="bossName">FINAL BOSS</span>
+        <span class="bh-lives" id="bossLives">❤❤❤</span>
+      </div>
+      <div class="bh-hp-bar"><div class="bh-hp-fill" id="bossHpFill" style="width:100%"></div></div>
+      <div class="bh-hp-label" id="bossHpLabel">300 / 300 HP</div>
     </div>
     <div class="quiz-meta">
       <div>Q <span id="qNum">1</span> / <span id="qTotal">10</span></div>
@@ -1673,7 +1849,7 @@
     <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 
-  <div class="footer">BUILT FOR CORBIN · v8 · 9 MODES · ANIMATIONS · BUG FIXES</div>
+  <div class="footer">BUILT FOR CORBIN · v9 · COINS · SHOP · DAILY · BOSS FIGHTS · UNLOCKS</div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -1735,6 +1911,17 @@
       <button class="btn-primary" onclick="finishWelcome()">▶ LET'S GO</button>
       <button class="btn-secondary" onclick="skipWelcome()">SKIP</button>
     </div>
+  </div>
+</div>
+
+<!-- SHOP MODAL -->
+<div class="modal-overlay" id="shopModal" onclick="if(event.target===this)closeShop()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeShop()">×</button>
+    <div class="modal-title">// SHOP</div>
+    <div class="shop-balance" id="shopBalance">💰 0 COINS</div>
+    <div class="shop-grid" id="shopGrid"></div>
+    <div id="crateReveal"></div>
   </div>
 </div>
 
@@ -2170,6 +2357,16 @@ document.addEventListener('keydown', ensureAudio, { once: true });
 const $ = id => document.getElementById(id);
 const shuffle = a => { const x = [...a]; for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; };
 const pickN = (arr, n, exclude) => shuffle(arr.filter(x => x !== exclude)).slice(0, n);
+// v9: smart distractors prefer same-topic, then fall back to any pool.
+// Works for any pool. `correct` is the correct term object (with .term and .topic).
+function pickSmartDistractors(pool, n, correct) {
+  if (!correct || !correct.topic) return pickN(pool, n, correct);
+  const sameTopic = pool.filter(x => x !== correct && (x.topic || 'Misc') === (correct.topic || 'Misc'));
+  if (sameTopic.length >= n) return shuffle(sameTopic).slice(0, n);
+  // Top up from outside the topic
+  const others = pool.filter(x => x !== correct && (x.topic || 'Misc') !== (correct.topic || 'Misc'));
+  return [...shuffle(sameTopic), ...shuffle(others).slice(0, n - sameTopic.length)];
+}
 const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
 // ---------- TOPIC FILTER ----------
@@ -2233,10 +2430,311 @@ function goHome() {
   renderQuickPlay();
   renderBossCard();
   renderHeroGreet();
+  renderCoinChip(false);
+  renderDailyChallenge();
+  renderModeLocks();
 }
 function exitRange() {
   rActive = false;
   if (rTargetEls) { rTargetEls.forEach(el => el.remove()); rTargetEls = []; }
+}
+
+// ---------- COINS + INVENTORY (v9) ----------
+function getCoins() { return parseInt(localStorage.getItem('cram_coins') || '0', 10); }
+function addCoins(n) {
+  const cur = getCoins() + n;
+  localStorage.setItem('cram_coins', cur);
+  renderCoinChip(true);
+  return cur;
+}
+function spendCoins(n) {
+  const cur = getCoins();
+  if (cur < n) return false;
+  localStorage.setItem('cram_coins', cur - n);
+  renderCoinChip(true);
+  return true;
+}
+function renderCoinChip(bump) {
+  const el = $('coinChip');
+  if (!el) return;
+  el.textContent = `💰 ${getCoins()}`;
+  if (bump) { el.classList.remove('bumped'); void el.offsetWidth; el.classList.add('bumped'); }
+}
+function getInventory() {
+  try { return JSON.parse(localStorage.getItem('cram_inv') || '{}'); } catch(e) { return {}; }
+}
+function setInventory(inv) { localStorage.setItem('cram_inv', JSON.stringify(inv)); }
+function bumpInventory(key, by = 1) {
+  const inv = getInventory();
+  inv[key] = (inv[key] || 0) + by;
+  setInventory(inv);
+  return inv[key];
+}
+function useInventory(key) {
+  const inv = getInventory();
+  if (!inv[key] || inv[key] <= 0) return false;
+  inv[key]--;
+  setInventory(inv);
+  return true;
+}
+// Award coins after a game ends. base 1; +2 hi-score; +2 perfect/clean
+function awardCoins(opts = {}) {
+  let amt = 1;
+  if (opts.newHi) amt += 2;
+  if (opts.perfect) amt += 2;
+  addCoins(amt);
+  showSnack(`+${amt} 💰`);
+  return amt;
+}
+
+const SHOP_ITEMS = [
+  { id: 'extra_life',    icon: '❤️', name: 'EXTRA LIFE',   desc: 'Banked. Next Survival/Range/Blitz/Boss starts with +1 life.', cost: 10, stack: true },
+  { id: 'streak_shield', icon: '🛡️', name: 'STREAK SHIELD', desc: 'Auto-protects your daily streak through one missed day.',     cost: 15, stack: true },
+  { id: 'hint_pack',     icon: '💡', name: 'HINT PACK x3',  desc: 'Three free hints for Type It. Cost no points to use.',         cost: 5,  stack: true, grants: { hint: 3 } },
+  { id: 'mystery_crate', icon: '🎁', name: 'MYSTERY CRATE', desc: 'Open for a random 5–25 coin payout. Pure dopamine.',           cost: 8,  stack: false },
+];
+
+function openShop() {
+  Sound.click();
+  renderShop();
+  $('shopModal').classList.add('active');
+}
+function closeShop() {
+  Sound.click();
+  $('shopModal').classList.remove('active');
+  const rev = $('crateReveal');
+  if (rev) rev.innerHTML = '';
+}
+function renderShop() {
+  $('shopBalance').textContent = `💰 ${getCoins()} COINS`;
+  const grid = $('shopGrid');
+  if (!grid) return;
+  const inv = getInventory();
+  grid.innerHTML = '';
+  SHOP_ITEMS.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'shop-item';
+    const own = item.id === 'mystery_crate' ? 0 :
+                item.id === 'hint_pack' ? (inv.hint || 0) :
+                (inv[item.id] || 0);
+    const ownLabel = item.id === 'mystery_crate' ? '' :
+                     item.id === 'hint_pack' ? `<div class="si-own">Hints owned: ${own}</div>` :
+                     `<div class="si-own">Owned: ${own}</div>`;
+    el.innerHTML = `
+      <div class="si-icon">${item.icon}</div>
+      <div class="si-text">
+        <div class="si-name">${item.name}</div>
+        <div class="si-desc">${item.desc}</div>
+        ${ownLabel}
+      </div>
+      <button class="si-buy" data-id="${item.id}">${item.cost}💰</button>`;
+    const btn = el.querySelector('.si-buy');
+    btn.disabled = getCoins() < item.cost;
+    btn.onclick = () => buyShopItem(item.id);
+    grid.appendChild(el);
+  });
+}
+function buyShopItem(id) {
+  const item = SHOP_ITEMS.find(x => x.id === id);
+  if (!item) return;
+  if (!spendCoins(item.cost)) { Sound.wrong(); showSnack('Not enough coins'); return; }
+  Sound.match();
+  if (item.id === 'mystery_crate') {
+    const win = 5 + Math.floor(Math.random() * 21); // 5..25
+    addCoins(win);
+    const rev = $('crateReveal');
+    if (rev) {
+      rev.innerHTML = `🎁 +${win} 💰`;
+      rev.className = 'crate-reveal';
+      void rev.offsetWidth;
+      rev.classList.add('crate-reveal');
+    }
+    fireConfetti(40);
+  } else if (item.id === 'hint_pack') {
+    bumpInventory('hint', 3);
+  } else {
+    bumpInventory(item.id, 1);
+  }
+  renderShop();
+}
+
+// ---------- DAILY CHALLENGE (v9) ----------
+// Deterministic per-day challenge. Picks a template by hashing today's date.
+const DAILY_TEMPLATES = [
+  { id: 'quiz_streak', desc: 'Get a 10-streak in Speed Quiz today', reward: 5,
+    check: ev => ev.type === 'streak' && ev.mode === 'quiz' && ev.value >= 10 },
+  { id: 'blitz_score', desc: 'Score 30+ in Blitz today', reward: 5,
+    check: ev => ev.type === 'gameEnd' && ev.mode === 'blitz' && ev.score >= 30 },
+  { id: 'range_score', desc: 'Score 200+ in Target Range', reward: 5,
+    check: ev => ev.type === 'gameEnd' && ev.mode === 'range' && ev.score >= 200 },
+  { id: 'master_5',    desc: 'Master 5 new terms today', reward: 6,
+    check: ev => ev.type === 'masteredToday' && ev.value >= 5 },
+  { id: 'play_3',      desc: 'Play 3 different game modes today', reward: 4,
+    check: ev => ev.type === 'modesToday' && ev.value >= 3 },
+  { id: 'type_perfect',desc: 'Get 5/5 in Type It', reward: 5,
+    check: ev => ev.type === 'gameEnd' && ev.mode === 'type' && ev.perfect },
+  { id: 'memory_speed',desc: 'Beat Memory under 60s', reward: 5,
+    check: ev => ev.type === 'gameEnd' && ev.mode === 'memory' && ev.seconds <= 60 },
+  { id: 'survive_10',  desc: 'Score 10+ in Survival', reward: 5,
+    check: ev => ev.type === 'gameEnd' && ev.mode === 'surv' && ev.score >= 10 },
+];
+function dailyHash(dateStr) {
+  let h = 0;
+  for (let i = 0; i < dateStr.length; i++) h = ((h << 5) - h) + dateStr.charCodeAt(i);
+  return Math.abs(h);
+}
+function getTodayChallenge() {
+  const d = todayStr();
+  const idx = dailyHash(d) % DAILY_TEMPLATES.length;
+  return { ...DAILY_TEMPLATES[idx], date: d };
+}
+function getDailyState2() {
+  let s; try { s = JSON.parse(localStorage.getItem('cram_dailyc') || '{}'); } catch(e) { s = {}; }
+  if (s.date !== todayStr()) {
+    s = { date: todayStr(), completed: false, masteredToday: 0, modesToday: [] };
+    localStorage.setItem('cram_dailyc', JSON.stringify(s));
+  }
+  return s;
+}
+function saveDailyState2(s) { localStorage.setItem('cram_dailyc', JSON.stringify(s)); }
+function checkDailyChallenge(event) {
+  const s = getDailyState2();
+  if (s.completed) return;
+  const ch = getTodayChallenge();
+  // Aggregate trackers
+  if (event.type === 'mastered') { s.masteredToday++; saveDailyState2(s); event = { type: 'masteredToday', value: s.masteredToday }; }
+  if (event.type === 'gameEnd') {
+    if (!s.modesToday.includes(event.mode)) { s.modesToday.push(event.mode); saveDailyState2(s); }
+    if (event.type === 'gameEnd') {
+      // Also check the modesToday derived event
+      if (s.modesToday.length >= 3) {
+        const ch2 = getTodayChallenge();
+        if (ch2.check({ type: 'modesToday', value: s.modesToday.length })) completeDailyChallenge();
+      }
+    }
+  }
+  if (ch.check(event)) completeDailyChallenge();
+}
+function completeDailyChallenge() {
+  const s = getDailyState2();
+  if (s.completed) return;
+  s.completed = true;
+  saveDailyState2(s);
+  const ch = getTodayChallenge();
+  addCoins(ch.reward);
+  Sound.victory();
+  fireConfetti(80);
+  showSnack(`✅ DAILY CHALLENGE! +${ch.reward}💰`);
+  renderDailyChallenge();
+}
+function renderDailyChallenge() {
+  const el = $('dailyChallenge');
+  if (!el) return;
+  const ch = getTodayChallenge();
+  const s = getDailyState2();
+  el.classList.toggle('complete', s.completed);
+  const icon = s.completed ? '✅' : '🎯';
+  const label = s.completed ? 'DAILY DONE!' : 'TODAY\'S CHALLENGE';
+  el.innerHTML = `
+    <span class="dc-icon">${icon}</span>
+    <div class="dc-text">
+      <div class="dc-label">${label}</div>
+      <div class="dc-desc">${ch.desc}</div>
+      <div class="dc-reward">+${ch.reward}💰</div>
+    </div>`;
+}
+
+// ---------- MODE UNLOCK CHAIN (v9) ----------
+// Each mode must be completed (game ended naturally) before the next opens.
+// Flash auto-completes after the player sees 5 cards. Boss has its own gate (mastery >= 25).
+const MODE_LABELS = {
+  flash: 'FLASH CARDS', memory: 'MEMORY', quiz: 'SPEED QUIZ',
+  match: 'MATCH UP', type: 'TYPE IT', surv: 'SURVIVAL',
+  range: 'TARGET RANGE', blitz: 'BLITZ', boss: 'FINAL BOSS',
+};
+const MODE_REQUIRES = {
+  // mode: prev mode that must have been completed
+  memory: 'flash', quiz: 'memory', match: 'quiz',
+  type: 'match',  surv: 'type',    range: 'surv', blitz: 'range',
+  // boss handled separately
+};
+function getCompleted() {
+  let arr = localStorage.getItem('cram_completed');
+  if (arr === null) {
+    // Grandfather existing users: anything they've tried is considered completed.
+    const tried = JSON.parse(localStorage.getItem('cram_tried') || '[]');
+    arr = tried.slice();
+    localStorage.setItem('cram_completed', JSON.stringify(arr));
+    return arr;
+  }
+  try { return JSON.parse(arr); } catch(e) { return []; }
+}
+function markCompleted(mode) {
+  const c = getCompleted();
+  if (c.includes(mode)) return false;
+  c.push(mode);
+  localStorage.setItem('cram_completed', JSON.stringify(c));
+  // Find which mode this unlocks (if any) and announce it
+  const unlocks = Object.keys(MODE_REQUIRES).find(m => MODE_REQUIRES[m] === mode);
+  if (unlocks) {
+    setTimeout(() => {
+      showSnack(`🔓 ${MODE_LABELS[unlocks]} UNLOCKED!`);
+      Sound.achievement();
+    }, 700);
+  }
+  return true;
+}
+function isModeUnlocked(mode) {
+  if (mode === 'flash') return true;
+  if (mode === 'boss') return isBossUnlocked();
+  const required = MODE_REQUIRES[mode];
+  if (!required) return true;
+  return getCompleted().includes(required);
+}
+function renderModeLocks() {
+  const completed = getCompleted();
+  // Map game-card aria-label substrings to mode ids
+  const map = [
+    { sel: '[aria-label="Mode 1: Flash Cards"]',   mode: 'flash' },
+    { sel: '[aria-label="Mode 2: Memory"]',        mode: 'memory' },
+    { sel: '[aria-label="Mode 3: Speed Quiz"]',    mode: 'quiz' },
+    { sel: '[aria-label="Mode 4: Match Up"]',      mode: 'match' },
+    { sel: '[aria-label="Mode 5: Type It"]',       mode: 'type' },
+    { sel: '[aria-label="Mode 6: Survival"]',      mode: 'surv' },
+    { sel: '[aria-label="Mode 7: Target Range"]',  mode: 'range' },
+    { sel: '[aria-label="Mode 8: Blitz"]',         mode: 'blitz' },
+  ];
+  map.forEach(({ sel, mode }) => {
+    const card = document.querySelector(sel);
+    if (!card) return;
+    const unlocked = isModeUnlocked(mode);
+    card.classList.toggle('locked-mode', !unlocked);
+    // Inject / remove lock requirement label
+    let req = card.querySelector('.lock-req');
+    if (!unlocked) {
+      if (!req) {
+        req = document.createElement('div');
+        req.className = 'lock-req';
+        card.appendChild(req);
+      }
+      const prev = MODE_REQUIRES[mode];
+      req.textContent = `BEAT ${MODE_LABELS[prev]} FIRST`;
+    } else if (req) {
+      req.remove();
+    }
+  });
+}
+// Wrap the actual game starters so locked modes show a snack instead of starting
+function safeStart(mode, starter) {
+  return function(...args) {
+    if (!isModeUnlocked(mode)) {
+      const prev = MODE_REQUIRES[mode];
+      showSnack(`🔒 Beat ${MODE_LABELS[prev]} first to unlock ${MODE_LABELS[mode]}`);
+      Sound.wrong();
+      return;
+    }
+    return starter.apply(this, args);
+  };
 }
 
 // ---------- ANIMATION HELPERS ----------
@@ -2503,8 +3001,11 @@ function flipMemoryCard(idx, el) {
 function endMemory() {
   memActive = false;
   clearInterval(memTimer);
+  markCompleted('memory');
   const secs = Math.floor((Date.now() - memStart) / 1000);
   const isNewBest = setHi('memory', secs, true);
+  awardCoins({ newHi: isNewBest, perfect: memMisses === 0 });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'memory', score: secs, seconds: secs, perfect: memMisses === 0 });
   Sound.victory();
   bumpStat('games_played');
   if (memMisses === 0) unlock('memory_perfect');
@@ -2533,6 +3034,8 @@ function startBlitz() {
   blTerms = getActiveTerms();
   if (blTerms.length < 4) { showSnack('Need at least 4 terms in this filter for Blitz'); return; }
   blActive = true; blScore = 0; blStreak = 0; blBest = 0; blLives = 3; blWave = 0;
+  if (useInventory('extra_life')) { blLives++; showSnack('❤️ Extra life applied!'); }
+  _bPrevLives = blLives;
   updateBlitzHud();
   unlock('blitz_started');
   // clear stage of any old terms
@@ -2565,12 +3068,12 @@ function nextBlitzWave() {
   const correct = blTerms[Math.floor(Math.random() * blTerms.length)];
   blCurrentCorrect = correct.term;
   $('bPrompt').textContent = correct.def;
-  // spawn one correct + N distractors falling over time
-  const distractors = shuffle(blTerms.filter(t => t.term !== correct.term)).slice(0, 3);
+  // v9: smart distractors prefer same-topic
+  const distractors = pickSmartDistractors(blTerms, 3, correct);
   const all = shuffle([correct, ...distractors]);
-  // scale speed/spacing with wave count — much faster than v7
-  const speed = Math.min(5.0, 1.8 + blWave * 0.18);
-  const spawnGap = Math.max(180, 520 - blWave * 22);
+  // scale speed/spacing with wave count — v9: faster than v7, gentler than v8
+  const speed = Math.min(2.6, 0.85 + blWave * 0.09);
+  const spawnGap = Math.max(280, 720 - blWave * 28);
   all.forEach((t, i) => {
     setTimeout(() => { if (blActive) spawnBlitzTerm(t.term, t.term === correct.term, speed); }, i * spawnGap);
   });
@@ -2666,6 +3169,10 @@ function resolveBlitzTap(entry, ev) {
 }
 function endBlitz() {
   blActive = false;
+  markCompleted('blitz');
+  const _blNewHi = blScore > getHi('blitz');
+  awardCoins({ newHi: _blNewHi, perfect: false });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'blitz', score: blScore });
   if (blFrame) cancelAnimationFrame(blFrame);
   blFrame = null;
   const stage = $('bStage');
@@ -2794,6 +3301,7 @@ function recordTermResult(termStr, gotCorrect) {
     if (total >= 25) unlock('mastery_25');
     if (total >= 50) unlock('mastery_50');
     if (total >= 100) unlock('mastery_100');
+    checkDailyChallenge({ type: 'mastered' });
     // topic-clear check
     const term = TERMS.find(t => t.term === termStr);
     if (term) {
@@ -2842,6 +3350,13 @@ function getDailyState() {
 function saveDailyState(s) { localStorage.setItem('cram_daily', JSON.stringify(s)); }
 function bumpDailyCount() {
   const s = getDailyState();
+  // v9: streak shield — if the user missed yesterday but has a shield in inventory, use it
+  if (s.lastCompletedDay && s.lastCompletedDay !== yesterdayStr() && s.lastCompletedDay !== todayStr()) {
+    if (useInventory('streak_shield')) {
+      s.lastCompletedDay = yesterdayStr();
+      showSnack('🛡️ Streak shield used — streak protected!');
+    }
+  }
   s.todayCount++;
   if (s.todayCount === DAILY_TARGET && s.lastCompletedDay !== todayStr()) {
     s.streak = (s.lastCompletedDay === yesterdayStr()) ? s.streak + 1 : 1;
@@ -3028,10 +3543,27 @@ function quickPlay() {
   else if (pick.mode === 'flash') startFlash();
 }
 
-// ---------- FINAL BOSS ----------
+// ---------- FINAL BOSS (v9 upgrade) ----------
 const BOSS_UNLOCK_MASTERY = 25;
+const BOSSES = [
+  { id: 1, name: 'THE FORGETTER',   avatar: '🧟', hp: 200, qTime: 8000, dmg: 18, unlockAt: 25 },
+  { id: 2, name: 'PROF. DRILLMASTER', avatar: '🤖', hp: 320, qTime: 7000, dmg: 20, unlockAt: 50 },
+  { id: 3, name: 'DR. FINAL',       avatar: '👹', hp: 450, qTime: 6000, dmg: 22, unlockAt: 80 },
+];
 let bossMode = false;
+let bossActive = null;       // BOSS object currently being fought
+let bossHP = 0, bossMaxHP = 0;
+let bossLives = 3;
+let _bossPrevMusicTrack = null;
 function isBossUnlocked() { return getStat('terms_mastered') >= BOSS_UNLOCK_MASTERY; }
+function getCurrentBoss() {
+  const m = getStat('terms_mastered');
+  let chosen = null;
+  for (const b of BOSSES) {
+    if (m >= b.unlockAt) chosen = b;
+  }
+  return chosen;
+}
 function renderBossCard() {
   const card = $('bossCard');
   if (!card) return;
@@ -3060,21 +3592,66 @@ function startBoss() {
     if (card) { card.classList.add('shake-small'); setTimeout(() => card.classList.remove('shake-small'), 400); }
     return;
   }
+  bossActive = getCurrentBoss() || BOSSES[0];
   bossMode = true;
+  bossHP = bossActive.hp;
+  bossMaxHP = bossActive.hp;
+  bossLives = 3;
+  // Apply banked extra life if user has one
+  if (useInventory('extra_life')) { bossLives++; showSnack('❤️ Extra life applied!'); }
+  // Switch to CHASE music for the fight
+  if (Sound.trackId !== 'chase') {
+    _bossPrevMusicTrack = Sound.trackId;
+    Sound.setTrack('chase');
+  } else { _bossPrevMusicTrack = null; }
   document.body.classList.add('boss-mode');
   ensureAudio(); markGameTried('quiz');
   qTerms = TERMS;
-  qOrder = shuffle([...Array(TERMS.length).keys()]).slice(0, 20);
+  // boss runs until HP=0 or lives=0; use a big queue
+  qOrder = shuffle([...Array(TERMS.length).keys()]);
   qIdx = 0; qScore = 0; qStreak = 0; qBestStreak = 0; qCorrect = 0; lastCorrectPos = -1;
-  $('qTotal').textContent = qOrder.length;
-  $('quiz').querySelector('.screen-title').textContent = '// 👑 FINAL BOSS';
+  $('qTotal').textContent = '∞';
+  $('quiz').querySelector('.screen-title').textContent = '// 👑 BOSS FIGHT';
+  // Reveal boss HUD
+  $('bossHud').hidden = false;
+  $('bossAvatar').textContent = bossActive.avatar;
+  $('bossName').textContent = bossActive.name;
+  $('bossLives').textContent = '❤'.repeat(bossLives);
+  $('bossHpFill').style.width = '100%';
+  $('bossHpLabel').textContent = `${bossHP} / ${bossMaxHP} HP`;
   Sound.click(); showScreen('quiz'); nextQuestion();
   unlock('boss_started');
 }
+function renderBossHud() {
+  if (!bossActive) return;
+  const pct = Math.max(0, (bossHP / bossMaxHP) * 100);
+  $('bossHpFill').style.width = pct + '%';
+  $('bossHpLabel').textContent = `${Math.max(0, bossHP)} / ${bossMaxHP} HP`;
+  $('bossLives').textContent = '❤'.repeat(Math.max(0, bossLives)) || '—';
+}
+function bossDamage(streak) {
+  const dmg = (bossActive ? bossActive.dmg : 18) + (streak * 4);
+  bossHP -= dmg;
+  const hud = $('bossHud');
+  hud.classList.remove('boss-hit'); void hud.offsetWidth; hud.classList.add('boss-hit');
+  renderBossHud();
+  return dmg;
+}
+function bossAttack() {
+  bossLives--;
+  shakeLives($('bossLives'));
+  renderBossHud();
+}
 function exitBossMode() {
   bossMode = false;
+  bossActive = null;
   document.body.classList.remove('boss-mode');
   $('quiz').querySelector('.screen-title').textContent = '// SPEED QUIZ';
+  const hud = $('bossHud'); if (hud) hud.hidden = true;
+  if (_bossPrevMusicTrack) {
+    Sound.setTrack(_bossPrevMusicTrack);
+    _bossPrevMusicTrack = null;
+  }
 }
 
 // ---------- THEMES ----------
@@ -3150,6 +3727,8 @@ function startRange() {
   if (rTerms.length < RANGE_OPTIONS) { showSnack(`Need at least ${RANGE_OPTIONS} terms in this filter for Target Range`); return; }
   rOrder = shuffle([...Array(rTerms.length).keys()]).slice(0, Math.min(RANGE_TOTAL, rTerms.length));
   rIdx = 0; rScore = 0; rStreak = 0; rBest = 0; rLives = 3; rHits = 0; rMisses = 0;
+  if (useInventory('extra_life')) { rLives++; showSnack('❤️ Extra life applied!'); }
+  _rPrevLives = rLives;
   rActive = true;
   $('rTotal').textContent = rOrder.length;
   updateRangeHud();
@@ -3205,8 +3784,8 @@ function nextRangeRound() {
   const correctTerm = rTerms[rOrder[rIdx]];
   $('rPrompt').textContent = correctTerm.def;
   updateRangeHud();
-  // pick distractor terms from the same pool, ensuring uniqueness by .term
-  const distractors = shuffle(rTerms.filter(t => t.term !== correctTerm.term)).slice(0, RANGE_OPTIONS - 1);
+  // v9: smart distractors prefer same-topic
+  const distractors = pickSmartDistractors(rTerms, RANGE_OPTIONS - 1, correctTerm);
   const all = shuffle([correctTerm, ...distractors]);
   spawnTargets(all, correctTerm.term);
 }
@@ -3278,6 +3857,11 @@ function resolveShot(isCorrect, el, ev) {
 }
 function endRange() {
   rActive = false;
+  markCompleted('range');
+  const _rNewHi = rScore > getHi('range');
+  const _rPerfect = rHits === RANGE_TOTAL && rMisses === 0;
+  awardCoins({ newHi: _rNewHi, perfect: _rPerfect });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'range', score: rScore, perfect: _rPerfect });
   rTargetEls.forEach(el => el.remove());
   rTargetEls = [];
   const isNewHi = setHi('range', rScore);
@@ -3398,6 +3982,7 @@ function renderFlash() {
     dots.appendChild(d);
   });
   seen.add(flashIdx);
+  if (seen.size >= 5) markCompleted('flash');
 }
 function toggleDefFirst() {
   defFirst = !defFirst;
@@ -3435,7 +4020,7 @@ function startQuiz() {
 function nextQuestion() {
   if (qIdx >= qOrder.length) return endQuiz();
   const t = qTerms[qOrder[qIdx]];
-  const distractors = pickN(qTerms, Math.min(3, qTerms.length - 1), t);
+  const distractors = pickSmartDistractors(qTerms, Math.min(3, qTerms.length - 1), t);
   let options = shuffle([t, ...distractors]);
   let correctPos = options.indexOf(t);
   if (correctPos === lastCorrectPos && options.length > 1) {
@@ -3464,7 +4049,7 @@ function nextQuestion() {
   startQTimer();
 }
 function startQTimer() {
-  const totalTime = bossMode ? 8000 : Q_TIME;
+  const totalTime = bossMode ? (bossActive ? bossActive.qTime : 7000) : Q_TIME;
   qTimeLeft = totalTime;
   const fill = $('timerFill');
   fill.style.transition = 'none'; fill.style.width = '100%'; fill.className = 'timer-fill';
@@ -3507,6 +4092,16 @@ function answer(correct, btn, ev) {
   }
   $('qScore').textContent = qScore;
   if (correct) bumpScoreEl($('qScore'));
+  // Boss mode: damage on correct, lose a life on wrong; end conditions checked
+  if (bossMode && bossActive) {
+    if (correct) {
+      const dmg = bossDamage(qStreak);
+      if (bossHP <= 0) { setTimeout(endQuiz, 800); return; }
+    } else {
+      bossAttack();
+      if (bossLives <= 0) { setTimeout(endQuiz, 1000); return; }
+    }
+  }
   setTimeout(() => { qIdx++; nextQuestion(); }, 1000);
 }
 function qTimeOut() {
@@ -3517,31 +4112,68 @@ function qTimeOut() {
     if (b.textContent === currentTerm) b.classList.add('correct');
   });
   qStreak = 0; Sound.wrong();
+  // Boss: timeout = boss attacks
+  if (bossMode && bossActive) {
+    bossAttack();
+    if (bossLives <= 0) { setTimeout(endQuiz, 1100); return; }
+  }
   setTimeout(() => { qIdx++; nextQuestion(); }, 1200);
 }
 function endQuiz() {
+  if (!bossMode) markCompleted('quiz');
   let isNewHi;
+  const wasBoss = bossMode;
+  let bossVictory = false;
   if (bossMode) {
+    bossVictory = bossHP <= 0;
     const cur = parseInt(localStorage.getItem('cram_boss_hi') || '0', 10);
     isNewHi = qScore > cur;
     if (isNewHi) localStorage.setItem('cram_boss_hi', qScore);
-    if (qCorrect === qOrder.length) unlock('boss_perfect');
-    if (qScore >= 400) unlock('boss_legend');
+    if (bossVictory) {
+      unlock('boss_started');
+      if (bossLives === 3) unlock('boss_perfect'); // no damage taken
+      if (qScore >= 400) unlock('boss_legend');
+      // Record defeated boss
+      try {
+        const slain = JSON.parse(localStorage.getItem('cram_bosses_slain') || '[]');
+        if (bossActive && !slain.includes(bossActive.id)) {
+          slain.push(bossActive.id);
+          localStorage.setItem('cram_bosses_slain', JSON.stringify(slain));
+        }
+      } catch(e) {}
+      fireConfetti(180);
+      addCoins(bossActive ? bossActive.id * 5 : 5); // 5/10/15 coins per boss tier
+    }
   } else {
     isNewHi = setHi('quiz', qScore);
   }
   Sound.victory();
   bumpStat('games_played');
-  if (qCorrect === qOrder.length) { unlock('perfect_quiz'); fireConfetti(120); }
+  const perfect = qCorrect === qOrder.length && !wasBoss;
+  if (perfect) { unlock('perfect_quiz'); fireConfetti(120); }
   if (qScore >= 200) unlock('speed_demon');
   if (isNewHi) fireConfetti(60);
-  const titlePrefix = bossMode ? '👑 ' : '';
-  $('resultTitle').textContent = titlePrefix + (isNewHi ? 'NEW HI-SCORE!' : (qCorrect === qOrder.length ? 'PERFECT!' : qScore >= qOrder.length * 12 ? 'CRUSHED IT!' : qScore >= qOrder.length * 8 ? 'NICE RUN!' : 'KEEP GOING!'));
+  let title;
+  if (wasBoss) {
+    title = bossVictory ? `🏆 ${bossActive ? bossActive.name : 'BOSS'} DEFEATED!` : '💀 YOU LOST';
+  } else {
+    title = isNewHi ? 'NEW HI-SCORE!' : (perfect ? 'PERFECT!' : qScore >= qOrder.length * 12 ? 'CRUSHED IT!' : qScore >= qOrder.length * 8 ? 'NICE RUN!' : 'KEEP GOING!');
+  }
+  $('resultTitle').textContent = title;
   $('resultScore').textContent = qScore;
-  $('resultMsg').textContent = `${qCorrect}/${qOrder.length} correct · Best streak: ${qBestStreak}🔥`;
-  const wasBoss = bossMode;
+  if (wasBoss) {
+    $('resultMsg').textContent = bossVictory
+      ? `${bossActive ? bossActive.name : 'Boss'} fell · ${qCorrect} hits · best streak ${qBestStreak}🔥`
+      : `Boss had ${bossHP} HP left · ${qCorrect} hits · best streak ${qBestStreak}🔥`;
+  } else {
+    $('resultMsg').textContent = `${qCorrect}/${qOrder.length} correct · Best streak: ${qBestStreak}🔥`;
+  }
   $('resultAgain').onclick = wasBoss ? startBoss : startQuiz;
-  showNextUp('quiz');
+  if (!wasBoss) {
+    awardCoins({ newHi: isNewHi, perfect });
+    checkDailyChallenge({ type: 'gameEnd', mode: 'quiz', score: qScore, perfect, seconds: 0 });
+    showNextUp('quiz');
+  }
   exitBossMode();
   showScreen('result');
 }
@@ -3611,6 +4243,12 @@ function pickMatch(card, ev) {
   }
 }
 function endMatch() {
+  markCompleted('match');
+  const _matchSecs_pre = Math.max(0, Math.floor((Date.now() - mStart) / 1000));
+  const _matchPrev = getHi('match');
+  const _matchNewHi = _matchPrev === 0 || _matchSecs_pre < _matchPrev;
+  awardCoins({ newHi: _matchNewHi, perfect: mMisses === 0 });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'match', score: _matchSecs_pre, perfect: mMisses === 0 });
   clearInterval(mTimer);
   const secs = Math.floor((Date.now() - mStart) / 1000);
   const isNewBest = setHi('match', secs, true);
@@ -3726,7 +4364,9 @@ function typeWrong() {
   setTimeout(() => input.classList.remove('wrong'), 400);
 }
 function typeHint() {
-  typeHintUsed = true;
+  // v9: free hint if user has hint inventory; otherwise normal hint (still cheap)
+  const freeHint = useInventory('hint');
+  typeHintUsed = !freeHint; // free hints don't penalize score
   const t = typeTerms[typeOrder[typeIdx]];
   // Reveal first letter
   const input = $('tInput');
@@ -3738,6 +4378,7 @@ function typeHint() {
       input.focus();
     }
   }
+  if (freeHint) showSnack('💡 Free hint used');
   Sound.click();
 }
 function typeSkip() {
@@ -3751,7 +4392,11 @@ function typeSkip() {
   setTimeout(() => { typeIdx++; nextType(); }, 1500);
 }
 function endType() {
+  markCompleted('type');
+  const perfect = typeCorrect === typeOrder.length;
   const isNewHi = setHi('type', typeScore);
+  awardCoins({ newHi: isNewHi, perfect });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'type', score: typeScore, perfect });
   Sound.victory();
   bumpStat('games_played');
   if (isNewHi) fireConfetti(60);
@@ -3770,7 +4415,9 @@ function startSurvival() {
   ensureAudio(); markGameTried('surv');
   sTerms = getActiveTerms();
   if (sTerms.length < 2) { showSnack('Need at least 2 terms for Survival'); return; }
-  sLives = 3; sScore = 0; sStreak = 0; sBest = 0; sLastPos = -1;
+  sLives = 3;
+  if (useInventory('extra_life')) { sLives++; showSnack('❤️ Extra life applied!'); }
+  sScore = 0; sStreak = 0; sBest = 0; sLastPos = -1;
   updateLives();
   Sound.click(); showScreen('survival'); nextSurvival();
   unlock('first_game');
@@ -3782,7 +4429,7 @@ function updateLives() {
 }
 function nextSurvival() {
   sCurT = sTerms[Math.floor(Math.random() * sTerms.length)];
-  const distractors = pickN(sTerms, Math.min(3, sTerms.length - 1), sCurT);
+  const distractors = pickSmartDistractors(sTerms, Math.min(3, sTerms.length - 1), sCurT);
   let options = shuffle([sCurT, ...distractors]);
   let correctPos = options.indexOf(sCurT);
   if (correctPos === sLastPos && options.length > 1) {
@@ -3860,6 +4507,10 @@ function sLoseLife(alreadyRecorded) {
   }
 }
 function endSurvival() {
+  markCompleted('surv');
+  const isNewHi_pre = sScore > getHi('surv');
+  awardCoins({ newHi: isNewHi_pre, perfect: false });
+  checkDailyChallenge({ type: 'gameEnd', mode: 'surv', score: sScore });
   clearInterval(sTimer);
   const isNewHi = setHi('surv', sScore);
   Sound.death();
@@ -3993,6 +4644,17 @@ renderFinalsCard();
 renderQuickPlay();
 renderBossCard();
 renderHeroGreet();
+renderCoinChip(false);
+renderDailyChallenge();
+// Wrap start functions with mode-lock guards (must be after they're defined)
+startMemory   = safeStart('memory', startMemory);
+startQuiz     = safeStart('quiz', startQuiz);
+startMatch    = safeStart('match', startMatch);
+startType     = safeStart('type', startType);
+startSurvival = safeStart('surv', startSurvival);
+startRange    = safeStart('range', startRange);
+startBlitz    = safeStart('blitz', startBlitz);
+renderModeLocks();
 checkTimeOfDayAchievements();
 // First-visit welcome flow
 if (!localStorage.getItem('cram_username')) {
