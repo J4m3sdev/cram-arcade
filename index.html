@@ -39,7 +39,7 @@
   /* ---------- TOPBAR ---------- */
   .topbar {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 22px; gap: 10px;
+    margin-bottom: 22px; gap: 10px; flex-wrap: wrap; row-gap: 10px;
   }
   .logo {
     font-family: 'Press Start 2P', monospace;
@@ -49,7 +49,7 @@
     cursor: pointer; user-select: none;
     flex-shrink: 0;
   }
-  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
   .icon-btn {
     background: var(--bg-2); border: 2px solid var(--ink-dim);
     color: var(--ink); padding: 8px 10px;
@@ -59,6 +59,11 @@
   }
   .icon-btn:hover { border-color: var(--lime); color: var(--lime); }
   .icon-btn.muted { opacity: 0.5; }
+  @media (max-width: 480px) {
+    .topbar { justify-content: center; }
+    .topbar-right { justify-content: center; width: 100%; }
+    .icon-btn { padding: 6px 8px; min-width: 36px; font-size: 12px; }
+  }
 
   /* ---------- HERO ---------- */
   .hero { text-align: center; padding: 22px 0 28px; }
@@ -168,6 +173,140 @@
     border-color: var(--cyan); color: var(--cyan);
     box-shadow: 0 0 0 1px var(--cyan) inset;
   }
+
+  /* ---------- FINALS COUNTDOWN CARD ---------- */
+  .finals-card {
+    background: var(--bg-2);
+    border: 2px solid rgba(255,255,255,0.08);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .finals-card .fc-row {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
+  }
+  .finals-card .fc-label {
+    font-family: 'Press Start 2P', monospace; font-size: 11px;
+    color: var(--ink); letter-spacing: 1px;
+  }
+  .finals-card .fc-mastery { font-size: 10px; color: var(--ink-dim); letter-spacing: 0.5px; }
+  .finals-card .fc-bar { height: 6px; background: var(--bg); overflow: hidden; border-radius: 3px; }
+  .finals-card .fc-fill {
+    height: 100%; background: linear-gradient(90deg, var(--lime), var(--cyan));
+    transition: width 0.4s ease;
+  }
+  .finals-card.soon     { border-color: var(--orange); }
+  .finals-card.soon     .fc-label { color: var(--orange); }
+  .finals-card.tomorrow { border-color: var(--pink); }
+  .finals-card.tomorrow .fc-label { color: var(--pink); }
+  .finals-card.today {
+    border-color: var(--red);
+    animation: finals-pulse 1.6s ease-in-out infinite;
+  }
+  .finals-card.today .fc-label { color: var(--red); }
+  .finals-card.past { border-color: rgba(255,255,255,0.05); opacity: 0.6; }
+  @keyframes finals-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,51,102,0.0); }
+    50%     { box-shadow: 0 0 0 4px rgba(255,51,102,0.18); }
+  }
+
+  /* ---------- QUICK PLAY ---------- */
+  .quick-play {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(223,255,0,0.10), rgba(255,45,149,0.10));
+    border: 2px solid var(--lime); color: var(--ink);
+    padding: 14px 18px; margin-bottom: 22px;
+    cursor: pointer; transition: all 0.15s;
+    font-family: 'JetBrains Mono', monospace;
+    text-align: left;
+  }
+  .quick-play:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--lime);
+  }
+  .quick-play .qp-icon {
+    font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--lime);
+    flex-shrink: 0;
+  }
+  .quick-play .qp-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .quick-play .qp-title {
+    font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--lime);
+    letter-spacing: 1px;
+  }
+  .quick-play .qp-sub { font-size: 11px; color: var(--ink-dim); letter-spacing: 0.5px; }
+
+  /* ---------- BOSS CARD ---------- */
+  .game-card.boss-card.unlocked {
+    border-color: var(--pink);
+    background: linear-gradient(135deg, var(--bg-2), rgba(255,45,149,0.1));
+  }
+  .game-card.boss-card.unlocked h3 { color: var(--pink); }
+  .game-card.boss-card.locked {
+    opacity: 0.55; filter: grayscale(0.4);
+  }
+  .game-card.boss-card.locked:hover { transform: none; box-shadow: none; }
+  body.boss-mode { background: #15001f; }
+  body.boss-mode .timer-fill { background: var(--red); box-shadow: 0 0 12px rgba(255,51,102,0.7); }
+  body.boss-mode .screen-title { color: var(--pink); text-shadow: 0 0 10px rgba(255,45,149,0.4); }
+
+  /* ---------- NEXT-UP RECOMMENDATION ---------- */
+  .next-up {
+    background: var(--bg-2);
+    border: 2px solid rgba(255,255,255,0.08);
+    padding: 12px 16px;
+    margin: 16px auto 0; max-width: 480px;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .next-up .nu-label {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: var(--cyan); letter-spacing: 1px;
+  }
+  .next-up .nu-text { font-size: 13px; color: var(--ink); }
+  .next-up .nu-btn {
+    align-self: flex-start; font-size: 11px;
+    border-color: var(--cyan); color: var(--cyan);
+  }
+  .next-up .nu-btn:hover { background: var(--cyan); color: var(--bg); }
+
+  /* ---------- FLOATING COMBO BADGE ---------- */
+  .combo-badge {
+    position: fixed; left: 50%; top: 18%;
+    transform: translate(-50%, -10px) scale(0.6);
+    background: var(--bg-2); border: 2px solid var(--orange);
+    color: var(--orange);
+    padding: 8px 16px;
+    font-family: 'Press Start 2P', monospace; font-size: 13px;
+    letter-spacing: 1px;
+    opacity: 0; pointer-events: none;
+    z-index: 800;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 0 14px rgba(255,149,0,0.5);
+  }
+  .combo-badge.pop {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  .combo-badge.pop.big {
+    border-color: var(--lime); color: var(--lime);
+    box-shadow: 0 0 20px rgba(223,255,0,0.7);
+    font-size: 15px;
+  }
+
+  /* ---------- SNACKBAR ---------- */
+  .snackbar {
+    position: fixed; left: 50%; bottom: 24px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-2); border: 2px solid var(--ink-dim);
+    color: var(--ink); padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    z-index: 1100; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    max-width: 90vw; text-align: center;
+  }
+  .snackbar.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ---------- GAMES GRID ---------- */
   .games {
@@ -421,10 +560,14 @@
   .btn-secondary:hover { border-color: var(--ink); }
 
   /* ---------- TIMER ---------- */
-  .timer-bar { height: 4px; background: var(--bg-2); margin-bottom: 14px; overflow: hidden; }
-  .timer-fill { height: 100%; background: var(--lime); width: 100%; transition: width 0.1s linear, background 0.3s; }
-  .timer-fill.warn { background: var(--orange); }
-  .timer-fill.danger { background: var(--red); }
+  .timer-bar { height: 6px; background: var(--bg-2); margin-bottom: 14px; overflow: hidden; border-radius: 3px; }
+  .timer-fill { height: 100%; background: var(--lime); width: 100%; transition: width 0.1s linear, background 0.3s; box-shadow: 0 0 8px rgba(223,255,0,0.4); }
+  .timer-fill.warn { background: var(--orange); box-shadow: 0 0 8px rgba(255,149,0,0.55); }
+  .timer-fill.danger {
+    background: var(--red); box-shadow: 0 0 10px rgba(255,51,102,0.7);
+    animation: timer-pulse 0.45s ease-in-out infinite;
+  }
+  @keyframes timer-pulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.6); } }
 
   /* ---------- BURST PARTICLES ---------- */
   .burst { position: fixed; pointer-events: none; z-index: 100; width: 8px; height: 8px; border-radius: 50%; }
@@ -580,34 +723,47 @@
       <h1>READY TO <span class="accent">CRUSH</span><br>YOUR <span class="pink">FINALS?</span></h1>
       <p>Pick a topic. Pick a game. Lock it in.</p>
     </div>
+    <div class="finals-card" id="finalsCard" role="status" aria-live="polite"></div>
+    <button class="quick-play" id="quickPlayBtn" onclick="quickPlay()" aria-label="Quick play — picks the best next thing to study">
+      <span class="qp-icon">▶</span>
+      <span class="qp-text">
+        <span class="qp-title">QUICK PLAY</span>
+        <span class="qp-sub" id="qpSub">Pick up where you left off</span>
+      </span>
+    </button>
     <div class="topic-bar">
       <div class="topic-bar-label">// CHOOSE A TOPIC</div>
-      <div class="topic-pills" id="topicPills"></div>
+      <div class="topic-pills" id="topicPills" role="tablist" aria-label="Filter terms by topic"></div>
     </div>
     <div class="games">
-      <div class="game-card" style="--accent: var(--lime);" onclick="startFlash()" tabindex="0">
+      <div class="game-card" style="--accent: var(--lime);" onclick="startFlash()" role="button" tabindex="0" aria-label="Mode 1: Flash Cards">
         <div class="num">// MODE 01</div><h3>FLASH CARDS</h3>
         <p>Flip through every term. Warmup mode.</p>
       </div>
-      <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" tabindex="0">
+      <div class="game-card" style="--accent: var(--pink);" onclick="startQuiz()" role="button" tabindex="0" aria-label="Mode 2: Speed Quiz">
         <div class="num">// MODE 02</div><h3>SPEED QUIZ</h3>
         <p>10 questions, 15 sec each. Build a streak.</p>
         <div class="hi" id="hiQuiz">HI-SCORE: 0</div>
       </div>
-      <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" tabindex="0">
+      <div class="game-card" style="--accent: var(--cyan);" onclick="startMatch()" role="button" tabindex="0" aria-label="Mode 3: Match Up">
         <div class="num">// MODE 03</div><h3>MATCH UP</h3>
         <p>Pair terms to definitions. Beat the clock.</p>
         <div class="hi" id="hiMatch">BEST TIME: --</div>
       </div>
-      <div class="game-card" style="--accent: var(--orange);" onclick="startType()" tabindex="0">
+      <div class="game-card" style="--accent: var(--orange);" onclick="startType()" role="button" tabindex="0" aria-label="Mode 4: Type It">
         <div class="num">// MODE 04</div><h3>TYPE IT</h3>
         <p>Read the def. Type the term. True recall.</p>
         <div class="hi" id="hiType">HI-SCORE: 0</div>
       </div>
-      <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" tabindex="0">
+      <div class="game-card" style="--accent: var(--red);" onclick="startSurvival()" role="button" tabindex="0" aria-label="Mode 5: Survival">
         <div class="num">// MODE 05</div><h3>SURVIVAL</h3>
         <p>3 lives. Endless rounds. How long can you last?</p>
         <div class="hi" id="hiSurv">RECORD: 0</div>
+      </div>
+      <div class="game-card boss-card locked" id="bossCard" style="--accent: var(--pink);" onclick="startBoss()" role="button" tabindex="0" aria-label="Boss mode">
+        <div class="num">// MODE 06 · BOSS</div><h3 id="bossTitle">🔒 FINAL BOSS</h3>
+        <p id="bossDesc">Master 25 terms to unlock.</p>
+        <div class="hi" id="hiBoss">HI-SCORE: 0</div>
       </div>
     </div>
     <div class="util-row">
@@ -741,6 +897,11 @@
       <div class="result-title" id="resultTitle">NICE!</div>
       <div class="result-score" id="resultScore">0</div>
       <div class="result-msg" id="resultMsg">—</div>
+      <div class="next-up" id="nextUp" hidden>
+        <div class="nu-label">// NEXT UP</div>
+        <div class="nu-text" id="nextUpText">—</div>
+        <button class="btn-secondary nu-btn" id="nextUpBtn">▶ DO IT</button>
+      </div>
       <div class="result-actions">
         <button class="btn-primary" id="resultAgain">▶ PLAY AGAIN</button>
         <button class="btn-secondary" onclick="goHome()">HOME</button>
@@ -759,7 +920,7 @@
     <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 
-  <div class="footer">BUILT FOR CORBIN · v4 · 5 GAMES · ACHIEVEMENTS</div>
+  <div class="footer">BUILT FOR CORBIN · v5 · 6 MODES · STREAKS · DRILLS · BOSS</div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -808,6 +969,9 @@
     <span class="name" id="toastName">—</span>
   </div>
 </div>
+
+<!-- FLOATING COMBO BADGE -->
+<div class="combo-badge" id="comboBadge" aria-hidden="true">🔥 COMBO ×0</div>
 
 <script>
 /* =========================================================
@@ -958,6 +1122,9 @@ const ACHIEVEMENTS = [
   { id: 'drilled_clean', icon: '🎯', name: 'Cleaned the Slate', desc: 'Clear all your missed terms' },
   { id: 'study_30min', icon: '⏱️', name: 'Locked In', desc: 'Study for 30 minutes in a day' },
   { id: 'study_60min', icon: '🧘', name: 'Deep Focus', desc: 'Study for 1 hour in a day' },
+  { id: 'boss_started', icon: '👑', name: 'Boss Challenger', desc: 'Take on the FINAL BOSS' },
+  { id: 'boss_perfect', icon: '🐉', name: 'Boss Slayer', desc: 'Perfect score in FINAL BOSS' },
+  { id: 'boss_legend', icon: '🌟', name: 'Legend', desc: 'Score 400+ in FINAL BOSS' },
 ];
 /* ========================================================= */
 
@@ -1143,7 +1310,19 @@ function showScreen(id) {
   $(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function goHome() { stopAllTimers(); Sound.click(); showScreen('home'); renderStats(); renderTopicPills(); renderDailyBadge(); }
+function goHome() {
+  stopAllTimers();
+  exitBossMode();
+  hideNextUp();
+  Sound.click();
+  showScreen('home');
+  renderStats();
+  renderTopicPills();
+  renderDailyBadge();
+  renderFinalsCard();
+  renderQuickPlay();
+  renderBossCard();
+}
 
 // ---------- HI-SCORES ----------
 function hiKey(mode) { return `cram_${mode}_${activeTopic}`; }
@@ -1183,13 +1362,24 @@ function markGameTried(mode) {
     if (tried.length >= 5) unlock('all_games');
   }
 }
+let toastQueue = [], toastActive = false;
 function showToast(achievement) {
+  toastQueue.push(achievement);
+  if (!toastActive) drainToastQueue();
+}
+function drainToastQueue() {
+  if (toastQueue.length === 0) { toastActive = false; return; }
+  toastActive = true;
+  const achievement = toastQueue.shift();
   Sound.achievement();
   const toast = $('toast');
   $('toastIcon').textContent = achievement.icon;
   $('toastName').textContent = achievement.name;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(drainToastQueue, 350); // allow exit transition to play
+  }, 2400);
 }
 function bumpStat(key, by = 1) {
   const cur = parseInt(localStorage.getItem('cram_stat_' + key) || '0', 10) + by;
@@ -1332,7 +1522,18 @@ function renderStudyTimer() {
 }
 
 // ---------- COMBO JUICE ----------
+function popComboBadge(streak) {
+  const b = $('comboBadge');
+  if (!b) return;
+  b.textContent = `🔥 COMBO ×${streak}`;
+  b.classList.remove('pop','big');
+  void b.offsetWidth;
+  b.classList.add('pop');
+  if (streak >= 10) b.classList.add('big');
+  setTimeout(() => b.classList.remove('pop','big'), 1100);
+}
 function triggerCombo(streak) {
+  if (streak >= 3) popComboBadge(streak);
   if (streak === 5) {
     document.body.classList.remove('shake-small','shake-big');
     void document.body.offsetWidth;
@@ -1354,6 +1555,128 @@ function triggerCombo(streak) {
     fireConfetti(60);
     Sound.combo(3);
   }
+}
+
+// ---------- FINALS COUNTDOWN ----------
+const FINALS_DATE = '2026-05-20';
+function daysUntilFinals() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const f = new Date(FINALS_DATE + 'T00:00:00');
+  return Math.ceil((f - today) / 86400000);
+}
+function renderFinalsCard() {
+  const el = $('finalsCard');
+  if (!el) return;
+  const d = daysUntilFinals();
+  const mastered = getStat('terms_mastered');
+  const pct = TERMS.length ? Math.round((mastered / TERMS.length) * 100) : 0;
+  ['today','tomorrow','soon','chill','past'].forEach(c => el.classList.remove(c));
+  let urgency = 'chill', label;
+  if (d < 0)      { urgency = 'past';     label = `FINALS ENDED ${-d} DAY${-d===1?'':'S'} AGO`; }
+  else if (d === 0){ urgency = 'today';    label = `FINALS TODAY — GO`; }
+  else if (d === 1){ urgency = 'tomorrow'; label = `FINALS TOMORROW`; }
+  else if (d <= 3){ urgency = 'soon';     label = `${d} DAYS TILL FINALS`; }
+  else            { urgency = 'chill';    label = `${d} DAYS TILL FINALS`; }
+  el.classList.add(urgency);
+  el.innerHTML = `
+    <div class="fc-row">
+      <span class="fc-label">${label}</span>
+      <span class="fc-mastery">${mastered}/${TERMS.length} MASTERED · ${pct}%</span>
+    </div>
+    <div class="fc-bar"><div class="fc-fill" style="width:${pct}%"></div></div>`;
+}
+
+// ---------- QUICK PLAY / SMART PICK ----------
+function smartPick() {
+  const missed = getMissedTerms();
+  if (missed.length >= 4) {
+    return { topic: '__missed', mode: 'quiz',
+             reason: `Drill ${missed.length} missed term${missed.length===1?'':'s'}`,
+             sub: 'Lock in the ones you keep forgetting' };
+  }
+  if (missed.length > 0) {
+    return { topic: '__missed', mode: 'flash',
+             reason: `Review ${missed.length} missed term${missed.length===1?'':'s'}`,
+             sub: 'Quick flash through your trouble spots' };
+  }
+  const topics = getTopics().filter(t => t !== 'ALL');
+  let best = null, bestUnmastered = 0;
+  topics.forEach(t => {
+    const set = TERMS.filter(x => (x.topic || 'Misc') === t);
+    const unmastered = set.filter(x => !isTermMastered(x.term)).length;
+    if (unmastered > bestUnmastered) { best = t; bestUnmastered = unmastered; }
+  });
+  if (best) {
+    const mode = bestUnmastered <= 6 ? 'quiz' : 'flash';
+    return { topic: best, mode,
+             reason: `${best.toUpperCase()} — ${bestUnmastered} left`,
+             sub: mode === 'quiz' ? 'Speed Quiz, ready when you are' : 'Flash Cards warmup, then quiz' };
+  }
+  return { topic: 'ALL', mode: 'flash',
+           reason: 'All 102 mastered — review mode',
+           sub: 'Stay sharp before the test' };
+}
+function renderQuickPlay() {
+  const pick = smartPick();
+  const sub = $('qpSub');
+  if (sub) sub.textContent = pick.reason;
+  const btn = $('quickPlayBtn');
+  if (btn) btn.dataset.subReason = pick.sub;
+}
+function quickPlay() {
+  const pick = smartPick();
+  activeTopic = pick.topic;
+  renderTopicPills();
+  Sound.click();
+  if (pick.mode === 'quiz') startQuiz();
+  else if (pick.mode === 'flash') startFlash();
+}
+
+// ---------- FINAL BOSS ----------
+const BOSS_UNLOCK_MASTERY = 25;
+let bossMode = false;
+function isBossUnlocked() { return getStat('terms_mastered') >= BOSS_UNLOCK_MASTERY; }
+function renderBossCard() {
+  const card = $('bossCard');
+  if (!card) return;
+  if (isBossUnlocked()) {
+    card.classList.remove('locked');
+    card.classList.add('unlocked');
+    $('bossTitle').textContent = '👑 FINAL BOSS';
+    $('bossDesc').textContent = '20 questions · 8 sec each · all topics · pure chaos.';
+    const hi = parseInt(localStorage.getItem('cram_boss_hi') || '0', 10);
+    $('hiBoss').textContent = `HI-SCORE: ${hi}`;
+  } else {
+    const remaining = Math.max(0, BOSS_UNLOCK_MASTERY - getStat('terms_mastered'));
+    card.classList.add('locked');
+    card.classList.remove('unlocked');
+    $('bossTitle').textContent = '🔒 FINAL BOSS';
+    $('bossDesc').textContent = `Master ${remaining} more term${remaining===1?'':'s'} to unlock.`;
+    $('hiBoss').textContent = 'LOCKED';
+  }
+}
+function startBoss() {
+  if (!isBossUnlocked()) {
+    Sound.wrong();
+    const card = $('bossCard');
+    if (card) { card.classList.add('shake-small'); setTimeout(() => card.classList.remove('shake-small'), 400); }
+    return;
+  }
+  bossMode = true;
+  document.body.classList.add('boss-mode');
+  ensureAudio(); markGameTried('quiz');
+  qTerms = TERMS;
+  qOrder = shuffle([...Array(TERMS.length).keys()]).slice(0, 20);
+  qIdx = 0; qScore = 0; qStreak = 0; qBestStreak = 0; qCorrect = 0; lastCorrectPos = -1;
+  $('qTotal').textContent = qOrder.length;
+  $('quiz').querySelector('.screen-title').textContent = '// 👑 FINAL BOSS';
+  Sound.click(); showScreen('quiz'); nextQuestion();
+  unlock('boss_started');
+}
+function exitBossMode() {
+  bossMode = false;
+  document.body.classList.remove('boss-mode');
+  $('quiz').querySelector('.screen-title').textContent = '// SPEED QUIZ';
 }
 
 // ---------- CONFETTI ----------
@@ -1433,7 +1756,7 @@ let flashOrder = [], flashIdx = 0, seen = new Set(), flashTerms = [];
 function startFlash() {
   ensureAudio(); markGameTried('flash');
   flashTerms = getActiveTerms();
-  if (flashTerms.length === 0) return;
+  if (flashTerms.length === 0) { showSnack('No terms in this filter to flip'); return; }
   flashOrder = shuffle([...Array(flashTerms.length).keys()]);
   flashIdx = 0; seen = new Set();
   renderFlash(); Sound.click(); showScreen('flash');
@@ -1484,8 +1807,10 @@ const Q_TIME = 15000;
 const Q_MAX = 10;
 function startQuiz() {
   ensureAudio(); markGameTried('quiz');
+  exitBossMode();
   qTerms = getActiveTerms();
-  if (qTerms.length < 2) return;
+  if (qTerms.length < 2) { showSnack('Pick a topic with at least 2 terms to quiz'); return; }
+  if (qTerms.length < 4) showSnack('Heads up — small pool means fewer answer choices');
   qOrder = shuffle([...Array(qTerms.length).keys()]).slice(0, Math.min(Q_MAX, qTerms.length));
   qIdx = 0; qScore = 0; qStreak = 0; qBestStreak = 0; qCorrect = 0; lastCorrectPos = -1;
   $('qTotal').textContent = qOrder.length;
@@ -1524,7 +1849,8 @@ function nextQuestion() {
   startQTimer();
 }
 function startQTimer() {
-  qTimeLeft = Q_TIME;
+  const totalTime = bossMode ? 8000 : Q_TIME;
+  qTimeLeft = totalTime;
   const fill = $('timerFill');
   fill.style.transition = 'none'; fill.style.width = '100%'; fill.className = 'timer-fill';
   void fill.offsetWidth;
@@ -1532,7 +1858,7 @@ function startQTimer() {
   clearInterval(qTimer);
   qTimer = setInterval(() => {
     qTimeLeft -= 100;
-    const pct = Math.max(0, qTimeLeft / Q_TIME) * 100;
+    const pct = Math.max(0, qTimeLeft / totalTime) * 100;
     fill.style.width = pct + '%';
     if (pct < 30 && pct >= 15) fill.className = 'timer-fill warn';
     else if (pct < 15) fill.className = 'timer-fill danger';
@@ -1576,16 +1902,29 @@ function qTimeOut() {
   setTimeout(() => { qIdx++; nextQuestion(); }, 1200);
 }
 function endQuiz() {
-  const isNewHi = setHi('quiz', qScore);
+  let isNewHi;
+  if (bossMode) {
+    const cur = parseInt(localStorage.getItem('cram_boss_hi') || '0', 10);
+    isNewHi = qScore > cur;
+    if (isNewHi) localStorage.setItem('cram_boss_hi', qScore);
+    if (qCorrect === qOrder.length) unlock('boss_perfect');
+    if (qScore >= 400) unlock('boss_legend');
+  } else {
+    isNewHi = setHi('quiz', qScore);
+  }
   Sound.victory();
   bumpStat('games_played');
   if (qCorrect === qOrder.length) { unlock('perfect_quiz'); fireConfetti(120); }
   if (qScore >= 200) unlock('speed_demon');
   if (isNewHi) fireConfetti(60);
-  $('resultTitle').textContent = isNewHi ? 'NEW HI-SCORE!' : (qCorrect === qOrder.length ? 'PERFECT!' : qScore >= qOrder.length * 12 ? 'CRUSHED IT!' : qScore >= qOrder.length * 8 ? 'NICE RUN!' : 'KEEP GOING!');
+  const titlePrefix = bossMode ? '👑 ' : '';
+  $('resultTitle').textContent = titlePrefix + (isNewHi ? 'NEW HI-SCORE!' : (qCorrect === qOrder.length ? 'PERFECT!' : qScore >= qOrder.length * 12 ? 'CRUSHED IT!' : qScore >= qOrder.length * 8 ? 'NICE RUN!' : 'KEEP GOING!'));
   $('resultScore').textContent = qScore;
   $('resultMsg').textContent = `${qCorrect}/${qOrder.length} correct · Best streak: ${qBestStreak}🔥`;
-  $('resultAgain').onclick = startQuiz;
+  const wasBoss = bossMode;
+  $('resultAgain').onclick = wasBoss ? startBoss : startQuiz;
+  showNextUp('quiz');
+  exitBossMode();
   showScreen('result');
 }
 
@@ -1595,7 +1934,7 @@ const MATCH_SIZE = 5;
 function startMatch() {
   ensureAudio(); markGameTried('match');
   const pool = getActiveTerms();
-  if (pool.length < 2) return;
+  if (pool.length < 2) { showSnack('Need at least 2 terms to play Match Up'); return; }
   mPicked = null; mMatched = 0; mMisses = 0;
   const picks = shuffle(pool).slice(0, Math.min(MATCH_SIZE, pool.length));
   mTotal = picks.length;
@@ -1666,6 +2005,7 @@ function endMatch() {
   $('resultScore').textContent = secs + 's';
   $('resultMsg').textContent = `${mMisses} miss${mMisses === 1 ? '' : 'es'} · ${mTotal} pairs`;
   $('resultAgain').onclick = startMatch;
+  showNextUp('match');
   showScreen('result');
 }
 
@@ -1675,7 +2015,7 @@ const TYPE_MAX = 5;
 function startType() {
   ensureAudio(); markGameTried('type');
   typeTerms = getActiveTerms();
-  if (typeTerms.length === 0) return;
+  if (typeTerms.length === 0) { showSnack('No terms in this filter to type'); return; }
   typeOrder = shuffle([...Array(typeTerms.length).keys()]).slice(0, Math.min(TYPE_MAX, typeTerms.length));
   typeIdx = 0; typeScore = 0; typeStreak = 0; typeBest = 0; typeCorrect = 0;
   $('tTotal').textContent = typeOrder.length;
@@ -1798,6 +2138,7 @@ function endType() {
   $('resultScore').textContent = typeScore;
   $('resultMsg').textContent = `${typeCorrect}/${typeOrder.length} correct · Best streak: ${typeBest}🔥`;
   $('resultAgain').onclick = startType;
+  showNextUp('type');
   showScreen('result');
 }
 
@@ -1807,7 +2148,7 @@ const S_TIME = 10000;
 function startSurvival() {
   ensureAudio(); markGameTried('surv');
   sTerms = getActiveTerms();
-  if (sTerms.length < 2) return;
+  if (sTerms.length < 2) { showSnack('Need at least 2 terms for Survival'); return; }
   sLives = 3; sScore = 0; sStreak = 0; sBest = 0; sLastPos = -1;
   updateLives();
   Sound.click(); showScreen('survival'); nextSurvival();
@@ -1904,10 +2245,52 @@ function endSurvival() {
   $('resultScore').textContent = sScore;
   $('resultMsg').textContent = `Best streak: ${sBest}🔥 · You survived ${sScore} rounds`;
   $('resultAgain').onclick = startSurvival;
+  showNextUp('surv');
   showScreen('result');
 }
 
 function stopAllTimers() { clearInterval(qTimer); clearInterval(mTimer); clearInterval(sTimer); }
+
+// ---------- SNACK TOAST ----------
+let snackTimer = null;
+function showSnack(msg) {
+  let el = $('snackbar');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'snackbar';
+    el.className = 'snackbar';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+// ---------- NEXT-UP RECOMMENDATION ----------
+function showNextUp(modeJustFinished) {
+  const nu = $('nextUp');
+  const txt = $('nextUpText');
+  const btn = $('nextUpBtn');
+  if (!nu || !txt || !btn) return;
+  const pick = smartPick();
+  // Avoid recommending the same mode we just finished
+  let rec = pick;
+  if (pick.mode === modeJustFinished) {
+    // Suggest the alternate: if just quiz, suggest flash, and vice versa
+    rec = { ...pick, mode: modeJustFinished === 'quiz' ? 'flash' : 'quiz' };
+  }
+  txt.textContent = rec.reason;
+  btn.onclick = () => {
+    activeTopic = rec.topic;
+    Sound.click();
+    if (rec.mode === 'quiz') startQuiz();
+    else if (rec.mode === 'flash') startFlash();
+    else if (rec.mode === 'type') startType();
+  };
+  nu.hidden = false;
+}
+function hideNextUp() { const nu = $('nextUp'); if (nu) nu.hidden = true; }
 
 // ---------- SETTINGS ----------
 function openSettings() {
@@ -1922,7 +2305,12 @@ function closeSettings() {
 $('musicVol').addEventListener('input', e => Sound.setMusicVol(e.target.value / 100));
 $('sfxVol').addEventListener('input', e => Sound.setSfxVol(e.target.value / 100));
 function resetAll() {
-  if (!confirm('Reset all scores, achievements, and settings?')) return;
+  const t = getTimerState();
+  const mastered = getStat('terms_mastered');
+  const games = getStat('games_played');
+  const msg = `Wipe ALL data?\n\nYou'll lose:\n· ${mastered} mastered terms\n· ${games} games played\n· ${formatTime(t.totalSecs)} of study time\n· hi-scores + achievements\n· daily streak\n\nThis can't be undone.`;
+  if (!confirm(msg)) return;
+  if (!confirm('Really sure? Final chance to keep your progress.')) return;
   Object.keys(localStorage).filter(k => k.startsWith('cram_')).forEach(k => localStorage.removeItem(k));
   location.reload();
 }
@@ -1970,6 +2358,17 @@ renderStats();
 renderDailyBadge();
 renderStudyTimer();
 startStudyTimer();
+renderFinalsCard();
+renderQuickPlay();
+renderBossCard();
+// Re-render finals/quick-play once a minute (timer keeps things fresh)
+setInterval(() => {
+  if ($('home').classList.contains('active')) {
+    renderFinalsCard();
+    renderQuickPlay();
+    renderBossCard();
+  }
+}, 60_000);
 </script>
 </body>
 </html>
