@@ -19,6 +19,8 @@
     --lime: #dfff00; --pink: #ff2d95; --cyan: #00e5ff;
     --orange: #ff9500; --green: #00ff88; --red: #ff3366;
     --grid: rgba(223, 255, 0, 0.06);
+    --glow-1: rgba(255, 45, 149, 0.15);   /* pink halo */
+    --glow-2: rgba(0, 229, 255, 0.12);    /* cyan halo */
   }
   /* INFERNO — red / orange / yellow on near-black */
   :root[data-theme="inferno"] {
@@ -27,6 +29,8 @@
     --lime: #ffd700; --pink: #ff5722; --cyan: #ff9500;
     --orange: #ff6b00; --green: #ffd700; --red: #ff1744;
     --grid: rgba(255, 107, 0, 0.07);
+    --glow-1: rgba(255, 87, 34, 0.18);
+    --glow-2: rgba(255, 215, 0, 0.10);
   }
   /* OCEAN — cyan / teal / blue on deep navy */
   :root[data-theme="ocean"] {
@@ -35,6 +39,8 @@
     --lime: #00e5ff; --pink: #00ffd5; --cyan: #4dd0e1;
     --orange: #29b6f6; --green: #00ff88; --red: #ff5252;
     --grid: rgba(0, 229, 255, 0.06);
+    --glow-1: rgba(0, 255, 213, 0.14);
+    --glow-2: rgba(0, 229, 255, 0.12);
   }
   /* MATRIX — green-on-black hacker terminal */
   :root[data-theme="matrix"] {
@@ -43,6 +49,8 @@
     --lime: #00ff41; --pink: #6eff6e; --cyan: #00ff88;
     --orange: #aaff00; --green: #00ff41; --red: #ff4444;
     --grid: rgba(0, 255, 65, 0.07);
+    --glow-1: rgba(0, 255, 65, 0.14);
+    --glow-2: rgba(170, 255, 0, 0.10);
   }
   /* SAKURA — pink / magenta / lavender */
   :root[data-theme="sakura"] {
@@ -51,14 +59,18 @@
     --lime: #ff7eb6; --pink: #ff2d95; --cyan: #c77dff;
     --orange: #ff85ff; --green: #b388ff; --red: #ff3d7f;
     --grid: rgba(255, 45, 149, 0.07);
+    --glow-1: rgba(255, 45, 149, 0.18);
+    --glow-2: rgba(199, 125, 255, 0.13);
   }
-  /* MONO — high-contrast white-on-black study mode */
+  /* MONO — high-contrast white-on-black study mode (better accent separation) */
   :root[data-theme="mono"] {
-    --bg: #000000; --bg-2: #111111; --bg-3: #1a1a1a; --bg-4: #262626;
-    --ink: #f5f5f5; --ink-dim: #888888;
-    --lime: #ffffff; --pink: #cccccc; --cyan: #dddddd;
-    --orange: #eeeeee; --green: #ffffff; --red: #ff5555;
+    --bg: #000000; --bg-2: #0e0e0e; --bg-3: #181818; --bg-4: #232323;
+    --ink: #f5f5f5; --ink-dim: #777777;
+    --lime: #ffffff; --pink: #a0a0a0; --cyan: #c8c8c8;
+    --orange: #d8d8d8; --green: #e8e8e8; --red: #ff6b6b;
     --grid: rgba(255, 255, 255, 0.04);
+    --glow-1: rgba(255, 255, 255, 0.06);
+    --glow-2: rgba(255, 255, 255, 0.03);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
@@ -71,10 +83,22 @@
     background-image:
       linear-gradient(var(--grid) 1px, transparent 1px),
       linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-      radial-gradient(circle at 20% 10%, rgba(255, 45, 149, 0.15), transparent 50%),
-      radial-gradient(circle at 80% 90%, rgba(0, 229, 255, 0.12), transparent 50%);
+      radial-gradient(circle at 20% 10%, var(--glow-1), transparent 50%),
+      radial-gradient(circle at 80% 90%, var(--glow-2), transparent 50%);
     background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
     background-attachment: fixed;
+  }
+  /* Subtle CRT scanline overlay — gives the arcade vibe at very low intensity */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background:
+      repeating-linear-gradient(180deg,
+        rgba(255,255,255,0.012) 0,
+        rgba(255,255,255,0.012) 1px,
+        transparent 1px,
+        transparent 3px);
+    mix-blend-mode: overlay;
+    opacity: 0.6;
   }
   .wrap { max-width: 960px; margin: 0 auto; padding: 18px 16px 60px; }
 
@@ -190,6 +214,156 @@
   @media (max-width: 480px) {
     .daily-badge { font-size: 10px; padding: 5px 7px; gap: 4px; }
     .daily-badge .db-today { font-size: 9px; }
+  }
+
+  /* ---------- v8 ANIMATIONS ---------- */
+  /* Stagger-fade game cards on home entrance */
+  .games-group { animation: group-fade-in 0.45s ease both; }
+  .games-group.warmup    { animation-delay: 0.05s; }
+  .games-group.test      { animation-delay: 0.12s; }
+  .games-group.challenge { animation-delay: 0.19s; }
+  .games-group.boss      { animation-delay: 0.26s; }
+  @keyframes group-fade-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Game cards: hover tilt + glow rise */
+  .game-card {
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, border-color 0.2s;
+  }
+  .game-card:not(.locked):hover {
+    transform: translate(-3px, -4px) rotate(-0.4deg);
+  }
+  @media (hover: hover) {
+    .game-card:not(.locked):hover::before { opacity: 0.22; transition: opacity 0.25s; }
+  }
+  /* Topic pills pop on activation */
+  .topic-pill {
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .topic-pill.active { animation: pill-pop 0.35s ease; }
+  @keyframes pill-pop {
+    0% { transform: scale(0.85); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  /* Hero greeting affordance: avatar floats gently, "→" appears */
+  .hero-greet {
+    padding: 6px 12px;
+    border: 1px dashed transparent;
+    border-radius: 0;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .hero-greet:hover { border-color: var(--cyan); }
+  .hero-greet::after {
+    content: ' →';
+    opacity: 0.5; transition: opacity 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .hero-greet:hover::after { opacity: 1; transform: translateX(4px); }
+  .hero-greet .hg-avatar { animation: avatar-bob 3.2s ease-in-out infinite; transform-origin: 50% 60%; }
+  @keyframes avatar-bob {
+    0%,100% { transform: translateY(0) rotate(0); }
+    50%     { transform: translateY(-3px) rotate(-3deg); }
+  }
+  /* Quick Play breathing glow — invites tap */
+  .quick-play { animation: qp-breathe 2.4s ease-in-out infinite; }
+  @keyframes qp-breathe {
+    0%,100% { box-shadow: 0 0 0 0 rgba(223,255,0,0); }
+    50%     { box-shadow: 0 0 18px rgba(223,255,0,0.35); }
+  }
+  .quick-play:hover { animation: none; }
+  /* Profile hero avatar bobs proudly */
+  .profile-hero .ph-avatar {
+    animation: avatar-bob 3.2s ease-in-out infinite, ph-glow 4s ease-in-out infinite;
+  }
+  @keyframes ph-glow {
+    0%,100% { text-shadow: 0 0 12px rgba(223,255,0,0.35); }
+    50%     { text-shadow: 0 0 24px rgba(223,255,0,0.6); }
+  }
+  /* Heart loss shake — applied via JS to .lives span */
+  @keyframes heart-shake {
+    0%,100% { transform: translateX(0); }
+    15%     { transform: translateX(-3px) scale(1.1); }
+    35%     { transform: translateX(3px) scale(0.95); }
+    55%     { transform: translateX(-2px); }
+    75%     { transform: translateX(2px); }
+  }
+  .lives.life-lost { animation: heart-shake 0.5s ease; color: var(--red); }
+  /* Score count-up flash */
+  @keyframes score-bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); filter: brightness(1.5); }
+    100% { transform: scale(1); }
+  }
+  .score-bumped { animation: score-bump 0.4s ease; display: inline-block; }
+  /* Modal slide-in (replace fadeIn for overlays) */
+  .modal-overlay.active .modal {
+    animation: modal-slide-in 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes modal-slide-in {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Welcome modal: extra entrance flair on the title */
+  #welcomeModal.active .welcome-content h2 {
+    animation: welcome-title 0.7s ease 0.15s both;
+  }
+  @keyframes welcome-title {
+    from { opacity: 0; letter-spacing: 8px; }
+    to   { opacity: 1; letter-spacing: 1px; }
+  }
+  /* Boss unlock celebration */
+  @keyframes boss-unlock-flash {
+    0%   { background: rgba(255,45,149,0); }
+    20%  { background: rgba(255,45,149,0.35); }
+    100% { background: rgba(255,45,149,0); }
+  }
+  body.boss-unlock-flash::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+    animation: boss-unlock-flash 0.9s ease forwards;
+  }
+  /* Result-screen score reveal */
+  #result.active .result-score { animation: result-score-in 0.7s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes result-score-in {
+    from { transform: scale(0.3); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  #result.active .result-title { animation: result-title-in 0.55s ease both; }
+  @keyframes result-title-in {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Type It input pulse on focus */
+  .type-input:focus { animation: input-glow 1.8s ease-in-out infinite; }
+  @keyframes input-glow {
+    0%,100% { box-shadow: 0 0 0 3px rgba(255,149,0,0.2); }
+    50%     { box-shadow: 0 0 0 5px rgba(255,149,0,0.45); }
+  }
+  /* Range target idle pulse */
+  .range-target { animation: target-pulse 2.1s ease-in-out infinite; }
+  @keyframes target-pulse {
+    0%,100% { box-shadow: 0 0 10px rgba(255,149,0,0.3); }
+    50%     { box-shadow: 0 0 18px rgba(255,149,0,0.55); }
+  }
+  /* Blitz term entrance + trail */
+  .blitz-term {
+    animation: blitz-entrance 0.25s ease both;
+    box-shadow: 0 0 10px rgba(0,229,255,0.35), 0 12px 20px -8px rgba(0,229,255,0.4);
+  }
+  @keyframes blitz-entrance {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  /* Reduced motion: kill non-critical animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.05s !important;
+    }
+    body::before { display: none; }
   }
 
   /* ---------- COMBO SHAKE ---------- */
@@ -800,39 +974,54 @@
     .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
   }
   .memory-card {
-    aspect-ratio: 3 / 4; min-height: 90px;
+    min-height: 110px;
     background: var(--bg-2); border: 2px solid rgba(255,255,255,0.1);
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 8px;
+    text-align: center; padding: 10px 8px;
     font-family: 'JetBrains Mono', monospace;
     font-size: clamp(10px, 1.4vw, 12px);
-    line-height: 1.3;
-    color: var(--ink); transition: all 0.18s;
-    word-break: break-word;
+    line-height: 1.35;
+    color: var(--ink);
+    transition: background 0.25s, border-color 0.25s, transform 0.4s;
+    word-break: break-word; overflow-wrap: break-word; hyphens: auto;
     position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
     transform-style: preserve-3d;
   }
+  /* Long-def cards naturally grow; rows align via grid auto-rows */
+  .memory-grid { grid-auto-rows: minmax(110px, auto); align-items: stretch; }
   .memory-card.hidden-card {
     color: transparent;
     background:
-      linear-gradient(135deg, rgba(0,229,255,0.08), rgba(223,255,0,0.08)),
+      linear-gradient(135deg, var(--glow-2), var(--glow-1)),
       var(--bg-2);
+    transform: rotateY(180deg);
   }
   .memory-card.hidden-card::after {
     content: '?'; position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    color: var(--cyan); font-size: 28px;
+    color: var(--cyan); font-size: 32px;
     font-family: 'Press Start 2P', monospace;
-    opacity: 0.6;
+    opacity: 0.7;
+    transform: rotateY(-180deg); /* mirror so it reads correctly when card is flipped */
+    text-shadow: 0 0 10px var(--cyan);
   }
   .memory-card.flipped {
     background: var(--bg-3); border-color: var(--lime);
-    animation: pop 0.3s ease;
+    transform: rotateY(0deg);
+    box-shadow: 0 0 16px rgba(223,255,0,0.25), 0 0 0 1px var(--lime) inset;
   }
   .memory-card.matched {
     background: rgba(0,255,136,0.15); border-color: var(--green);
     color: var(--green); cursor: default;
+    transform: rotateY(0deg) scale(0.98);
+    animation: mem-matched 0.6s ease;
+  }
+  @keyframes mem-matched {
+    0% { transform: rotateY(0deg) scale(1); box-shadow: 0 0 0 0 var(--green); }
+    40% { transform: rotateY(0deg) scale(1.08); box-shadow: 0 0 24px var(--green); }
+    100% { transform: rotateY(0deg) scale(0.98); box-shadow: 0 0 0 0 var(--green); }
   }
   .memory-card.mismatched {
     border-color: var(--red); color: var(--red);
@@ -1088,16 +1277,32 @@
 
   /* ---------- ACHIEVEMENT TOAST ---------- */
   .toast {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px);
     background: var(--bg-2); border: 2px solid var(--lime);
     box-shadow: 6px 6px 0 var(--pink);
     padding: 14px 20px; z-index: 500;
     display: flex; align-items: center; gap: 14px;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s;
     max-width: 90vw;
+    pointer-events: none; /* never blocks taps on UI behind it */
   }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast-icon { font-size: 28px; }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    animation: toast-shimmer 1.6s ease-in-out infinite;
+  }
+  @keyframes toast-shimmer {
+    0%,100% { box-shadow: 6px 6px 0 var(--pink), 0 0 0 0 rgba(223,255,0,0); }
+    50%     { box-shadow: 6px 6px 0 var(--pink), 0 0 22px rgba(223,255,0,0.45); }
+  }
+  .toast-icon {
+    font-size: 30px;
+    animation: toast-icon-pop 0.5s ease;
+  }
+  @keyframes toast-icon-pop {
+    0% { transform: scale(0.4) rotate(-15deg); }
+    60% { transform: scale(1.25) rotate(8deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
   .toast-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
   .toast-text .label { color: var(--lime); font-weight: 700; display: block; margin-bottom: 2px; }
   .toast-text .name { color: var(--ink); }
@@ -1468,7 +1673,7 @@
     <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 
-  <div class="footer">BUILT FOR CORBIN · v7 · 9 MODES · PROFILE · THEMES · BLITZ · MEMORY</div>
+  <div class="footer">BUILT FOR CORBIN · v8 · 9 MODES · ANIMATIONS · BUG FIXES</div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -1524,10 +1729,11 @@
   <div class="modal welcome-content">
     <h2>★ WELCOME TO<br>CORBIN'S CRAM ARCADE ★</h2>
     <p>Pick a name and a player icon to get started.</p>
-    <input type="text" class="name-input" id="welcomeName" maxlength="14" placeholder="YOUR NAME" autocomplete="off">
+    <input type="text" class="name-input" id="welcomeName" maxlength="14" placeholder="YOUR NAME" autocomplete="off" onkeydown="if(event.key==='Enter')finishWelcome()">
     <div class="avatar-grid" id="welcomeAvatars"></div>
     <div class="welcome-actions">
       <button class="btn-primary" onclick="finishWelcome()">▶ LET'S GO</button>
+      <button class="btn-secondary" onclick="skipWelcome()">SKIP</button>
     </div>
   </div>
 </div>
@@ -2033,6 +2239,32 @@ function exitRange() {
   if (rTargetEls) { rTargetEls.forEach(el => el.remove()); rTargetEls = []; }
 }
 
+// ---------- ANIMATION HELPERS ----------
+function bumpScoreEl(el) {
+  if (!el) return;
+  el.classList.remove('score-bumped');
+  void el.offsetWidth;
+  el.classList.add('score-bumped');
+}
+function shakeLives(el) {
+  if (!el) return;
+  el.classList.remove('life-lost');
+  void el.offsetWidth;
+  el.classList.add('life-lost');
+  setTimeout(() => el.classList.remove('life-lost'), 600);
+}
+let _bossUnlockedShown = false;
+function maybeFireBossUnlock() {
+  if (_bossUnlockedShown) return;
+  if (!isBossUnlocked()) return;
+  _bossUnlockedShown = true;
+  document.body.classList.remove('boss-unlock-flash');
+  void document.body.offsetWidth;
+  document.body.classList.add('boss-unlock-flash');
+  setTimeout(() => document.body.classList.remove('boss-unlock-flash'), 1000);
+  fireConfetti(80);
+}
+
 // ---------- USER PROFILE ----------
 const AVATARS = ['🎮','🚀','⚡','🐉','👑','🦅','🐺','👻','⭐','🎯','🧠','🦁','🦊','🐯','🌟','🔥','💎','🤖'];
 function getUser() {
@@ -2089,6 +2321,13 @@ function finishWelcome() {
   $('welcomeModal').classList.remove('active');
   Sound.click();
   unlock('welcome_aboard');
+  fireConfetti(40);
+}
+function skipWelcome() {
+  // Default profile so we don't re-prompt every load
+  saveUser('PLAYER 1', '🎮');
+  $('welcomeModal').classList.remove('active');
+  Sound.click();
 }
 let editAvatarChoice = '🎮';
 function openEditProfile() {
@@ -2097,6 +2336,7 @@ function openEditProfile() {
   editAvatarChoice = u.avatar;
   $('editName').value = u.name;
   renderAvatarGrid('editAvatars', editAvatarChoice, em => { editAvatarChoice = em; });
+  $('editName').onkeydown = e => { if (e.key === 'Enter') saveEditProfile(); };
   $('editProfileModal').classList.add('active');
 }
 function closeEditProfile() {
@@ -2305,11 +2545,18 @@ function startBlitz() {
   blFrame = requestAnimationFrame(blitzLoop);
   nextBlitzWave();
 }
+let _bPrevLives = 3, _bPrevScore = 0;
 function updateBlitzHud() {
   $('bWave').textContent = blWave;
-  $('bScore').textContent = blScore;
+  const scoreEl = $('bScore');
+  if (blScore !== _bPrevScore && blScore > 0) bumpScoreEl(scoreEl);
+  _bPrevScore = blScore;
+  scoreEl.textContent = blScore;
   $('bStreak').textContent = blStreak + '🔥';
-  $('bLives').textContent = '❤'.repeat(Math.max(0, blLives)) || '—';
+  const livesEl = $('bLives');
+  livesEl.textContent = '❤'.repeat(Math.max(0, blLives)) || '—';
+  if (blLives < _bPrevLives) shakeLives(livesEl);
+  _bPrevLives = blLives;
 }
 function nextBlitzWave() {
   if (!blActive) return;
@@ -2321,9 +2568,9 @@ function nextBlitzWave() {
   // spawn one correct + N distractors falling over time
   const distractors = shuffle(blTerms.filter(t => t.term !== correct.term)).slice(0, 3);
   const all = shuffle([correct, ...distractors]);
-  // scale speed/spacing with wave count
-  const speed = Math.min(1.8, 0.55 + blWave * 0.06); // px per frame at 60fps reference
-  const spawnGap = Math.max(450, 1100 - blWave * 35);
+  // scale speed/spacing with wave count — much faster than v7
+  const speed = Math.min(5.0, 1.8 + blWave * 0.18);
+  const spawnGap = Math.max(180, 520 - blWave * 22);
   all.forEach((t, i) => {
     setTimeout(() => { if (blActive) spawnBlitzTerm(t.term, t.term === correct.term, speed); }, i * spawnGap);
   });
@@ -2789,12 +3036,14 @@ function renderBossCard() {
   const card = $('bossCard');
   if (!card) return;
   if (isBossUnlocked()) {
+    const wasLocked = card.classList.contains('locked');
     card.classList.remove('locked');
     card.classList.add('unlocked');
     $('bossTitle').textContent = '👑 FINAL BOSS';
     $('bossDesc').textContent = '20 questions · 8 sec each · all topics · pure chaos.';
     const hi = parseInt(localStorage.getItem('cram_boss_hi') || '0', 10);
     $('hiBoss').textContent = `HI-SCORE: ${hi}`;
+    if (wasLocked) maybeFireBossUnlock();
   } else {
     const remaining = Math.max(0, BOSS_UNLOCK_MASTERY - getStat('terms_mastered'));
     card.classList.add('locked');
@@ -2909,11 +3158,18 @@ function startRange() {
   unlock('range_started');
   nextRangeRound();
 }
+let _rPrevLives = null, _rPrevScore = 0;
 function updateRangeHud() {
   $('rRound').textContent = Math.min(rIdx + 1, rOrder.length);
-  $('rScore').textContent = rScore;
+  const scoreEl = $('rScore');
+  if (rScore !== _rPrevScore && rScore > 0) bumpScoreEl(scoreEl);
+  _rPrevScore = rScore;
+  scoreEl.textContent = rScore;
   $('rStreak').textContent = rStreak + '🔥';
-  $('rLives').textContent = '❤'.repeat(Math.max(0, rLives)) || '—';
+  const livesEl = $('rLives');
+  livesEl.textContent = '❤'.repeat(Math.max(0, rLives)) || '—';
+  if (_rPrevLives !== null && rLives < _rPrevLives) shakeLives(livesEl);
+  _rPrevLives = rLives;
 }
 function setupRangeCrosshair() {
   const stage = $('rStage');
@@ -3250,6 +3506,7 @@ function answer(correct, btn, ev) {
     });
   }
   $('qScore').textContent = qScore;
+  if (correct) bumpScoreEl($('qScore'));
   setTimeout(() => { qIdx++; nextQuestion(); }, 1000);
 }
 function qTimeOut() {
@@ -3459,6 +3716,7 @@ function typeCorrectAnswer() {
   if (typeStreak >= 25) unlock('streak_25');
   triggerCombo(typeStreak);
   $('tScore').textContent = typeScore;
+  bumpScoreEl($('tScore'));
   setTimeout(() => { typeIdx++; nextType(); }, 900);
 }
 function typeWrong() {
@@ -3518,7 +3776,9 @@ function startSurvival() {
   unlock('first_game');
 }
 function updateLives() {
-  $('sLives').textContent = '❤'.repeat(sLives) + '🖤'.repeat(3 - sLives);
+  const el = $('sLives');
+  el.textContent = '❤'.repeat(sLives) + '🖤'.repeat(3 - sLives);
+  shakeLives(el);
 }
 function nextSurvival() {
   sCurT = sTerms[Math.floor(Math.random() * sTerms.length)];
